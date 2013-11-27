@@ -1,0 +1,31 @@
+<form>
+  <div class="container">
+	
+	<div ng-if="definition.title || definition.description" class="row">
+	  <h3 ng-if="definition.title">{{ definition.title }}</h3>
+	  <div ng-if="definition.description" class="well well-sm">{{ definition.description }}</div>
+	</div>
+
+	<div ng-repeat="page in definition.pages">
+	  
+	  <div ng-if="page.title || page.description" class="row">
+		<h4 ng-if="page.title" class="text-primary">{{ page.title }}</h4>
+		<div ng-if="page.description">{{ page.description }}</div>
+	  </div>
+
+	  <div class="row" ng-repeat="line in page.lines">
+		<coolform-header ng-if="line.header" header="line.header"></coolform-header>
+		<coolform-line ng-if="line.fields" fields="line.fields"></coolform-line>
+	  </div>
+
+	</div>
+	
+	<div class="row">
+	  <div class="well well-sm">
+		<button type="button" class="btn btn-success">{{ definition.submit }}</button>
+		<button type="button" class="btn btn-warning">{{ definition.reset }}</button>
+	  </div>
+	</div>
+
+  </div>
+</form>

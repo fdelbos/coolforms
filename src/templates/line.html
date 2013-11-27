@@ -1,0 +1,19 @@
+<div ng-repeat="field in fields">
+  <div class="col-md-{{ field.size * 3 }}" >
+	<div class="form-group">
+	  
+	  <label for="email">
+		{{ field.label }}
+	  </label>
+
+	  <ng-switch on=\"field.type\">
+		<coolform-email ng-switch-when="email" field="field" ></coolform-email>
+		<coolform-password ng-switch-when="password" field="field" ></coolform-password>
+		<coolform-text ng-switch-when="text" field="field" ></coolform-text>
+	  </ng-switch>
+
+	  <p class="help-block" ng-if="field.help">{{ field.help }}</p>
+	  
+	</div>
+  </div>
+</div>
