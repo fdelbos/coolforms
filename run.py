@@ -7,7 +7,7 @@
 # file 'LICENSE.txt', which is part of this source code package.
 # 
 
-import subprocess, argparse, sys, time, os
+import subprocess, argparse, sys, time, os, httplib, urllib
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -81,6 +81,25 @@ def watch_files():
         observer.stop()
     observer.join()
 
+def minify():
+    fd = open('%s.js' % outname, 'r')
+    js = fd.read()
+    fd.close()    
+    params = urllib.urlencode([
+        ('js_code', js),
+        ('compilation_level', 'WHITESPACE_ONLY'),
+        ('output_format', 'text'),
+        ('output_info', 'compiled_code'),
+    ])
+    headers = {"Content-type": "application/x-www-form-urlencoded"}
+    conn = httplib.HTTPConnection('closure-compiler.appspot.com')
+    conn.request('POST', '/compile', params, headers)
+    response = conn.getresponse()
+    data = response.read()
+    fd = open('%s.min.js' % outname, 'w')
+    fd.write(data)
+    fd.close()
+    conn.close()
 
 if __name__ == "__main__":    
 
@@ -103,6 +122,9 @@ if __name__ == "__main__":
         if make_build() == False:
             print "build failed!"
             sys.exit(1)
+        print("sending request to google closure")
+        minify()
+        print("done generating %s.min.js" % outname)
 
     else:
         print "Unknow command!"
