@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # 
-# build.py
+# run.py
 # 
 # Created by Frederic DELBOS <fred.delbos@gmail.com> on Nov 22 2013.
 # This file is subject to the terms and conditions defined in
