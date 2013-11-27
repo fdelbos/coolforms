@@ -6,10 +6,13 @@
 ## file 'LICENSE.txt', which is part of this source code package.
 ## 
 
-angular.module('CoolFormPassword', []).
-  directive('coolformPassword', () ->
+angular.module('CoolFormPassword', ['CoolFormValueService']).
+  directive('coolformPassword', (valueService) ->
 
     l = (scope) ->
+      scope.value = if scope.field.value? then scope.field.value else ""
+      valueService(scope, scope.field)
+
 
     return {
       restrict: 'E'
