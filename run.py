@@ -14,6 +14,7 @@ from watchdog.events import FileSystemEventHandler
 template_files = [
     'container',
     'controller',
+    'field',
     'header',
     'line',
     'submit',
@@ -24,6 +25,7 @@ coffee_files = [
     'init',
     'directives/container',
     'directives/controller',
+    'directives/field',
     'directives/header',
     'directives/line',
     'directives/submit',
@@ -34,6 +36,7 @@ coffee_files = [
     'validators/sameas',
     'validators/validators',
     'services/definition',
+    'services/submit',
     'services/validation',
     'services/value',
 ]
