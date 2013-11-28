@@ -6,7 +6,6 @@
 ## file 'LICENSE.txt', which is part of this source code package.
 ## 
 
-
 angular.module('CoolForm').
   directive('coolform', (definitionService, validatorService) ->
 
