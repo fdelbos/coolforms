@@ -15,20 +15,27 @@ angular.module('CoolFormServices').
       errors = {}
   
       validateField = (name) ->
-        field = fields.name
+        field = fields[name]
         if field.validation?
           for rule in field.validation
-            if rule.validator in validation
-              if rule.validator(name, values, rule) is false
+            if validators[rule.validator]?
+              if validators[rule.validator](name, values, rule) is false
                 errors[name] = rule.options.message
+                dispatchResult(name, errors[name])
                 return rule.options.message
-        delete errors[name]              
+        delete errors[name]
+        dispatchResult(name)
         null
+
+      validateAll = ->
+        for f of fields
+          dispatchResult(f, validateField(f))
+        if errors.length != 0 then false else true
 
       dispatchResult = (name, result) ->
         dest = 'validation_' + name
         ok = if result == null then true else false
-        scope.$emit(dest, {'ok': ok, 'msg': result})
+        scope.$broadcast(dest, {'ok': ok, 'msg': result})
   
       scope.$on('register', (event, field) ->
         event.stopPropagation()
@@ -38,13 +45,19 @@ angular.module('CoolFormServices').
 
       scope.$on('valueChange', (event, data) ->
         event.stopPropagation()
-        console.log data
         values[data.name] = data.value
+        #console.log(data.name)
+        delete errors[data.name]
+        dispatchResult(data.name, null)
       )
 
-      scope.$on('validateForm', (event) ->
+      scope.$on('submit', (event) ->
         event.stopPropagation()
-        for f in fields.keys
-          dispatchResult(f.name, validateField(f.name))
+        validateAll()
       )
+
+      scope.$on('reset', (event) ->
+      )
+
+      
   )
