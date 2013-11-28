@@ -25,16 +25,27 @@
 				  "size":2}]},
 			 {"fields": [
 				 {"name":"email",
-				  "type":"email",
+				  "type":"text",
 				  "placeholder":"ex: john.smith@mail.com",
 				  "label":"Email",
-				  "size":2},
+				  "size":2,
+				  "validation":[
+					  {"validator":"email",
+					   "options":{
+						   "message": "Invalid email address"}}]},
 				 {"name":"password",
-				  "type":"password",
+				  "type":"text",
 				  "label": "Password",
-				  "help":"choose a strong password"},
+				  "help":"choose a strong password",
+				  "options":{
+					  "password": true},
+				  "validation": [
+					  {"validator": "min_size",
+					   "options":{
+						   "size": 6,
+						   "message": "Sould be at least 6 characters long"}}]},
 				 {"name":"password_check",
-				  "type":"password",
+				  "type":"text",
 				  "label": "Re-Password",
 				  "help":"verifying password"}]},
 			 {"header": {
