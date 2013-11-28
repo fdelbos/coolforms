@@ -21,6 +21,7 @@ template_files = [
 ]
 
 coffee_files = [
+    'init',
     'directives/container',
     'directives/controller',
     'directives/header',
