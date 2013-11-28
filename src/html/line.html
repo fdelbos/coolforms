@@ -1,17 +1,5 @@
 <div ng-repeat="field in fields">
   <div class="col-md-{{ field.size * 3 }}" >
-	<div class="form-group">
-	  
-	  <label for="email">
-		{{ field.label }}
-	  </label>
-
-	  <ng-switch on=\"field.type\">
-		<coolform-text ng-switch-when="text" field="field" ></coolform-text>
-	  </ng-switch>
-
-	  <p class="help-block" ng-if="field.help">{{ field.help }}</p>
-	  
-	</div>
+	<coolform-field field="field" error="error"></coolform-field>
   </div>
 </div>
