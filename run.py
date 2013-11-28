@@ -14,21 +14,23 @@ from watchdog.events import FileSystemEventHandler
 template_files = [
     'container',
     'controller',
-    'email',
     'header',
     'line',
-    'password',
+    'submit',
     'text',
 ]
 
 coffee_files = [
     'directives/container',
     'directives/controller',
-    'directives/email',
     'directives/header',
     'directives/line',
-    'directives/password',
+    'directives/submit',
     'directives/text',
+    'validation/email',
+    'validation/minsize',
+    'validation/notblank',
+    'validation/sameas',
     'validation/service',
 ]
 
@@ -61,7 +63,7 @@ def make_build():
     return True if subprocess.call(['coffee', '--compile', '%s.coffee' % outname]) == 0 else False
 
 class FileChangeHandler(FileSystemEventHandler):
-    def on_any_event(self, event):
+    def on_modified(self, event):
         if event.src_path.split('/')[-1][0] == '.':
             return
         print "change detected at: %s" % event.src_path
