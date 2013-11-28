@@ -12,20 +12,15 @@ angular.module('CoolFormServices').
 
       reset = -> 
         scope.value = if field.value? then field.value else defaultValue
-    
       
       scope.$watch('value', (v, o) ->
         scope.$emit('valueChange', {name: field.name, value: scope.value})
       )
-
-      scope.$on('validation_' + field.name, (event, args) ->
-        event.stopPropagation()
-        if args.ok
-          scope.error = false
-          if onOk? then onOk()
-        else
-          scope.error = args.msg
-          if onError then onError(args.msg)
+      
+      scope.$on('validation_' + field.name, (event, error) ->
+        scope.error = error
+        if error.ok == true and onOk? then onOk()
+        if error.ok == false and onError? then onError()
       )
       reset()
       scope.$emit('register', field)
