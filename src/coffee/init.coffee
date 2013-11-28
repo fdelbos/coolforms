@@ -6,5 +6,7 @@
 ## file 'LICENSE.txt', which is part of this source code package.
 ## 
 
-angular.module('CoolFormDirective', [])
-angular.module('CoolFormValidator', [])
+angular.module('CoolFormValidators', [])
+angular.module('CoolFormServices', ['CoolFormValidators'])
+angular.module('CoolFormDirectives', ['CoolFormServices'])
+angular.module('CoolForm', ['CoolFormDirectives', 'CoolFormServices'])
