@@ -28,11 +28,14 @@ coffee_files = [
     'directives/line',
     'directives/submit',
     'directives/text',
-    'validation/email',
-    'validation/minsize',
-    'validation/notblank',
-    'validation/sameas',
-    'validation/service',
+    'validators/email',
+    'validators/minsize',
+    'validators/notblank',
+    'validators/sameas',
+    'validators/validators',
+    'services/definition',
+    'services/validation',
+    'services/value',
 ]
 
 outname = "coolforms"
