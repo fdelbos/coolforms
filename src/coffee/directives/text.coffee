@@ -10,20 +10,19 @@ angular.module('CoolFormDirectives').
   directive('coolformText', (valueService) ->
 
     l = (scope) ->
-      valueService(scope, scope.field, "")
-
-      
+      valueService(scope, scope.field, "")  
+          
       setType = (options) ->
         scope.type = "text"
         if options? and options.password? and options.password is true
           scope.type = "password"  
       setType(scope.field.options)
-        
 
     return {
       restrict: 'E'
       scope:
         field: '='
+        error: '='
       template: templates.text
       link: l
     }
