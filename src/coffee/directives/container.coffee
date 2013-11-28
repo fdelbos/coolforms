@@ -6,7 +6,7 @@
 ## file 'LICENSE.txt', which is part of this source code package.
 ## 
 
-angular.module('CoolFormContainer', ['CoolFormLine', 'CoolFormHeader', 'CoolFormSubmit']).
+angular.module('CoolFormDirectives').
   directive('coolformContainer', () ->
 
     return {
