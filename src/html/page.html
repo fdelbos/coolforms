@@ -1,0 +1,9 @@
+<div ng-if="page.title || page.description" class="row">
+  <h4 ng-if="page.title" class="text-primary">{{ page.title }}</h4>
+  <div ng-if="page.description">{{ page.description }}</div>
+</div>
+
+<div class="row" ng-repeat="line in page.lines">
+  <coolform-header ng-if="line.header" header="line.header"></coolform-header>
+  <coolform-line ng-if="line.fields" fields="line.fields"></coolform-line>
+</div>
