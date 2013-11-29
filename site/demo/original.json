@@ -2,10 +2,17 @@
 	"name":"demo",
 	"action":"/some_url",
 	"method":"POST",
+	"title":"A CoolForm Example",
+	"description":"lorem ipsum...",
 	"submit":"Submit my CoolForm!",
 	"reset":"Reset...",
 	"pages":[
-		{"lines":[
+		{"title":"First Page",
+		 "description":"Section description lorem ipsum...",
+		 "lines":[
+		 	 {"header": {
+				 "title":"Login Info",
+				 "description":"Section description lorem ipsum..."}},
 			 {"fields": [
 				 {"name":"first_name",
 				  "type":"text",
@@ -47,7 +54,30 @@
 					  {"validator":"same_as",
 					   "options":{
 						   "field":"password",
-						   "message":"Do not correspond to password"}}]}]}
+						   "message":"Do not correspond to password"}}]}]},
+			 {"header": {
+				 "title":"Address"}},
+			 {"fields": [
+				 {"name":"addr1",
+				 "type":"text",
+				 "label":"Address 1",
+				 "size":1}]},
+			 {"fields": [
+				 {"name":"addr2",
+				 "type":"text",
+				 "label":"Address 2",
+				 "size":2}]},
+			 {"fields": [
+				 {"name":"addr3",
+				 "type":"text",
+				 "label":"Address 3",
+				 "size":3}]},
+			 {"fields": [
+				 {"name":"addr4",
+				 "type":"text",
+				 "label":"Address 4",
+				 "size":4}]}
+
 		 ]}
 	]}
 }
