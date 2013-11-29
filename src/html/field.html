@@ -9,9 +9,10 @@
 	  <coolform-text ng-switch-when="text" field="field" error="data.error"></coolform-text>
 	</ng-switch>
   </div>
-
+  
+  <em><small ng-hide="data.error.ok" class="text-danger">{{ data.error.msg }}</small></em>
   <p class="help-block" ng-if="field.help">{{ field.help }}</p>
 
-  <!-- <div ng-hide="data.error.ok" class="alert alert-danger">{{ data.error.msg }}</div> -->
+  
     
 </div>
