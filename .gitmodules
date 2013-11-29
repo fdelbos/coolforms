@@ -1,0 +1,6 @@
+[submodule "site/libs/ace"]
+	path = site/libs/ace
+	url = https://github.com/ajaxorg/ace-builds.git
+[submodule "site/libs/ui-ace"]
+	path = site/libs/ui-ace
+	url = https://github.com/angular-ui/ui-ace.git
