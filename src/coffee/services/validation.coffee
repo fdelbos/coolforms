@@ -46,7 +46,6 @@ angular.module('CoolFormServices').
       scope.$on('valueChange', (event, data) ->
         event.stopPropagation()
         values[data.name] = data.value
-        #console.log(data.name)
         delete errors[data.name]
         dispatchResult(data.name, null)
       )
