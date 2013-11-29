@@ -1,12 +1,17 @@
 <div class="form-group" ng-class="{'has-error': !data.error.ok}" >
+
   <label class="control-label" for="email">
 	{{ field.label }}
   </label>
-
-  <ng-switch on=\"field.type\">
-	<coolform-text ng-switch-when="text" field="field" error="data.error"></coolform-text>
-  </ng-switch>
+  
+  <div class="coolform-popover">
+	<ng-switch on=\"field.type\">
+	  <coolform-text ng-switch-when="text" field="field" error="data.error"></coolform-text>
+	</ng-switch>
+  </div>
 
   <p class="help-block" ng-if="field.help">{{ field.help }}</p>
+
+  <!-- <div ng-hide="data.error.ok" class="alert alert-danger">{{ data.error.msg }}</div> -->
     
 </div>
