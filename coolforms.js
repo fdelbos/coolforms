@@ -3,16 +3,24 @@
   var templates;
 
   templates = {
-    container: "<form>\n  <div class=\"container\">\n\n<div ng-if=\"definition.title || definition.description\" class=\"row\">\n  <h3 ng-if=\"definition.title\">{{ definition.title }}</h3>\n  <div ng-if=\"definition.description\" class=\"well well-sm\">{{ definition.description }}</div>\n</div>\n\n<div ng-repeat=\"page in definition.pages\">\n  \n  <div ng-if=\"page.title || page.description\" class=\"row\">\n	<h4 ng-if=\"page.title\" class=\"text-primary\">{{ page.title }}</h4>\n	<div ng-if=\"page.description\">{{ page.description }}</div>\n  </div>\n\n  <div class=\"row\" ng-repeat=\"line in page.lines\">\n	<coolform-header ng-if=\"line.header\" header=\"line.header\"></coolform-header>\n	<coolform-line ng-if=\"line.fields\" fields=\"line.fields\"></coolform-line>\n  </div>\n\n</div>\n\n<div class=\"row\">\n  <div class=\"well well-sm\">\n	<button type=\"button\" class=\"btn btn-success\">{{ definition.submit }}</button>\n	<button type=\"button\" class=\"btn btn-warning\">{{ definition.reset }}</button>\n  </div>\n</div>\n\n  </div>\n</form>",
+    container: "<form>\n  <div class=\"container\">\n\n<div ng-if=\"definition.title || definition.description\" class=\"row\">\n  <h3 ng-if=\"definition.title\">{{ definition.title }}</h3>\n  <div ng-if=\"definition.description\" class=\"well well-sm\">{{ definition.description }}</div>\n</div>\n\n<div ng-repeat=\"page in definition.pages\">\n  \n  <div ng-if=\"page.title || page.description\" class=\"row\">\n	<h4 ng-if=\"page.title\" class=\"text-primary\">{{ page.title }}</h4>\n	<div ng-if=\"page.description\">{{ page.description }}</div>\n  </div>\n\n  <div class=\"row\" ng-repeat=\"line in page.lines\">\n	<coolform-header ng-if=\"line.header\" header=\"line.header\"></coolform-header>\n	<coolform-line ng-if=\"line.fields\" fields=\"line.fields\"></coolform-line>\n  </div>\n\n</div>\n\n<div class=\"row\">\n  <coolform-submit definition=\"definition\"></coolform-submit>\n</div>\n\n  </div>\n</form>",
     controller: "<div>\n  <div ng-if=\"!definition\">\n  	loading {{ url }}\n  </div>\n\n  <div ng-if=\"definition\">\n<coolform-container definition=\"definition\">\n</coolform-container>\n  </div>\n</div>",
-    email: "<input \ntype=\"email\" \nclass=\"form-control\" \nplaceholder=\"{{ field.placeholder }}\" \nng-model=\"value\"/>",
+    field: "<div class=\"form-group\" ng-class=\"{'has-error': !data.error.ok}\" >\n\n  <label class=\"control-label\" for=\"email\">\n{{ field.label }}\n  </label>\n  \n  <div class=\"coolform-popover\">\n<ng-switch on=\"field.type\">\n  <coolform-text ng-switch-when=\"text\" field=\"field\" error=\"data.error\"></coolform-text>\n</ng-switch>\n  </div>\n\n  <p class=\"help-block\" ng-if=\"field.help\">{{ field.help }}</p>\n\n  <!-- <div ng-hide=\"data.error.ok\" class=\"alert alert-danger\">{{ data.error.msg }}</div> -->\n    \n</div>",
     header: "<div>\n<h4 class=\"text-muted\">{{ header.title }}</h4>\n<div>{{ header.description }}</div>\n</div>",
-    line: "<div ng-repeat=\"field in fields\">\n  <div class=\"col-md-{{ field.size * 3 }}\" >\n<div class=\"form-group\">\n  \n  <label for=\"email\">\n	{{ field.label }}\n  </label>\n\n  <ng-switch on=\"field.type\">\n	<coolform-email ng-switch-when=\"email\" field=\"field\" ></coolform-email>\n	<coolform-password ng-switch-when=\"password\" field=\"field\" ></coolform-password>\n	<coolform-text ng-switch-when=\"text\" field=\"field\" ></coolform-text>\n  </ng-switch>\n\n  <p class=\"help-block\" ng-if=\"field.help\">{{ field.help }}</p>\n  \n</div>\n  </div>\n</div>",
-    password: "<input \ntype=\"password\" \nclass=\"form-control\" \nplaceholder=\"{{ field.placeholder }}\" \nng-model=\"value\"/>",
-    text: "<input \ntype=\"text\" \nclass=\"form-control\" \nplaceholder=\"{{ field.placeholder }}\" \nng-model=\"value\"/>"
+    line: "<div ng-repeat=\"field in fields\">\n  <div class=\"col-md-{{ field.size * 3 }}\" >\n<coolform-field field=\"field\" error=\"error\"></coolform-field>\n  </div>\n</div>",
+    submit: "<div class=\"well well-sm\">\n<button ng-click=\"submit()\" type=\"button\" class=\"btn btn-success\">{{ definition.submit }}</button>\n<button type=\"button\" class=\"btn btn-warning\">{{ definition.reset }}</button>\n</div>",
+    text: "<input \ntype=\"{{ type }}\" \nclass=\"form-control\" \nplaceholder=\"{{ field.placeholder }}\" \nng-model=\"value\"/>"
   };
 
-  angular.module('CoolFormContainer', ['CoolFormLine', 'CoolFormHeader']).directive('coolformContainer', function() {
+  angular.module('CoolFormValidators', []);
+
+  angular.module('CoolFormServices', ['CoolFormValidators']);
+
+  angular.module('CoolFormDirectives', ['CoolFormServices']);
+
+  angular.module('CoolForm', ['CoolFormDirectives', 'CoolFormServices']);
+
+  angular.module('CoolFormDirectives').directive('coolformContainer', function() {
     return {
       restrict: 'E',
       scope: {
@@ -22,59 +30,20 @@
     };
   });
 
-  angular.module('CoolFormDefinitionResolver', []).factory('DefinitionResolver', function($q) {
-    return function(url) {
-      var deferred;
-      deferred = $q.defer();
-      $.getJSON(url, function(data) {
-        return deferred.resolve(data);
-      });
-      return deferred.promise;
-    };
-  });
-
-  angular.module('CoolForm', ['CoolFormContainer', 'CoolFormDefinitionResolver']).directive('coolform', function(DefinitionResolver) {
+  angular.module('CoolForm').directive('coolform', function(definitionService, validatorService) {
     var l;
     l = function(scope, elem, attr) {
-      var make_data;
       scope.definition = null;
       if (scope.url) {
-        scope.definition = DefinitionResolver(scope.url).then(function(definition) {
+        scope.definition = definitionService(scope.url).then(function(definition) {
           return scope.definition = definition.form;
         });
       }
-      make_data = function(sections) {
-        var errors, field, line, section, values, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
-        values = {};
-        errors = {};
-        for (_i = 0, _len = sections.length; _i < _len; _i++) {
-          section = sections[_i];
-          _ref = section.lines;
-          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-            line = _ref[_j];
-            _ref1 = line.fields;
-            for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
-              field = _ref1[_k];
-              if (field.value != null) {
-                values[field.name] = field.value;
-              } else {
-                values[field.name] = null;
-              }
-              errors[field.name] = null;
-            }
-          }
-        }
-        scope.data = {
-          values: values,
-          errors: errors
-        };
-        return console.log(scope.data);
-      };
       return scope.$watch('definition', function(v) {
-        if (!v.sections) {
+        if (!v.pages) {
 
         } else {
-          return make_data(v.sections);
+          return validatorService(scope);
         }
       });
     };
@@ -89,20 +58,44 @@
     };
   });
 
-  angular.module('CoolFormEmail', []).directive('coolformEmail', function() {
+  angular.module('CoolFormDirectives').directive('coolformField', function() {
     var l;
-    l = function(scope) {};
+    l = function(scope, elem) {
+      var cfg, pop;
+      scope.data = {
+        error: {
+          ok: true,
+          msg: null
+        }
+      };
+      cfg = {
+        placement: 'bottom',
+        trigger: 'manual',
+        container: 'body',
+        content: function() {
+          return scope.data.error.msg;
+        }
+      };
+      pop = $(elem.contents()).children('.coolform-popover').popover(cfg);
+      return scope.$watch('data.error', function(v) {
+        if (v.ok === true) {
+          return pop.popover('hide');
+        } else {
+          return pop.popover('show');
+        }
+      });
+    };
     return {
       restrict: 'E',
       scope: {
         field: '='
       },
-      template: templates.email,
+      template: templates.field,
       link: l
     };
   });
 
-  angular.module('CoolFormHeader', []).directive('coolformHeader', function() {
+  angular.module('CoolFormDirectives').directive('coolformHeader', function() {
     return {
       restrict: 'E',
       scope: {
@@ -112,7 +105,7 @@
     };
   });
 
-  angular.module('CoolFormLine', ['CoolFormEmail', 'CoolFormPassword', 'CoolFormText']).directive('coolformLine', function() {
+  angular.module('CoolFormDirectives').directive('coolformLine', function() {
     var l;
     l = function(scope, elem, attr) {
       var f, _i, _len, _ref, _results;
@@ -138,64 +131,217 @@
     };
   });
 
-  angular.module('CoolFormPassword', []).directive('coolformPassword', function() {
+  angular.module('CoolFormDirectives').directive('coolformSubmit', function(submitService) {
     var l;
-    l = function(scope) {};
+    l = function(scope) {
+      return scope.submit = function() {
+        return submitService(scope);
+      };
+    };
     return {
       restrict: 'E',
       scope: {
-        field: '='
+        definition: '='
       },
-      template: templates.password,
+      template: templates.submit,
       link: l
     };
   });
 
-  angular.module('CoolFormText', ['CoolFormValueService']).directive('coolformText', function(valueService) {
+  angular.module('CoolFormDirectives').directive('coolformText', function(valueService) {
     var l;
     l = function(scope) {
-      scope.value = scope.field.value != null ? scope.field.value : "";
-      return valueService(scope, scope.field);
+      var setType;
+      valueService(scope, scope.field, "");
+      setType = function(options) {
+        scope.type = "text";
+        if ((options != null) && (options.password != null) && options.password === true) {
+          return scope.type = "password";
+        }
+      };
+      return setType(scope.field.options);
     };
     return {
       restrict: 'E',
       scope: {
-        field: '='
+        field: '=',
+        error: '='
       },
       template: templates.text,
       link: l
     };
   });
 
-  angular.module('CoolFormValueService', []).factory('valueService', function() {
-    return function(scope, field, onOk, onError) {
-      scope.$emit('register', field);
-      scope.$watch('value', function(v, o) {
-        if (v === o) {
-          return;
+  angular.module('CoolFormValidators').factory('validatorEmail', function() {
+    return function(name, values, rule) {
+      var p;
+      p = /^([\w.-]+)@([\w.-]+)\.([a-zA-Z.]{2,6})$/i;
+      if (values[name] && values[name].match(p)) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+  });
+
+  angular.module('CoolFormValidators').factory('validatorMinSize', function() {
+    return function(name, values, rule) {
+      if (values[name].length >= rule.options.size) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+  });
+
+  angular.module('CoolFormValidators').factory('validatorNotBlank', function() {
+    return function(name, values, rule) {
+      var v;
+      v = values[name];
+      if (v === void 0 || v === null) {
+        return false;
+      }
+      if (v === true || v === false) {
+        return true;
+      }
+      if (v && !isNaN(v)) {
+        return true;
+      }
+      if (v && (v.replace(/^\s+|\s+$/g, "")).length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+  });
+
+  angular.module('CoolFormValidators').factory('validatorSameAs', function() {
+    return function(name, values, rule) {
+      if (values[name] === values[rule.field]) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+  });
+
+  angular.module('CoolFormValidators').factory('validators', function(validatorEmail, validatorMinSize, validatorNotBlank, validatorSameAs) {
+    var validators;
+    validators = {
+      email: validatorEmail,
+      min_size: validatorMinSize,
+      not_blank: validatorNotBlank,
+      same_as: validatorSameAs
+    };
+    return validators;
+  });
+
+  angular.module('CoolFormServices').factory('definitionService', function($q) {
+    return function(url) {
+      var deferred;
+      deferred = $q.defer();
+      $.getJSON(url, function(data) {
+        return deferred.resolve(data);
+      });
+      return deferred.promise;
+    };
+  });
+
+  angular.module('CoolFormServices').factory('submitService', function() {
+    return function(scope) {
+      return scope.$emit('submit');
+    };
+  });
+
+  angular.module('CoolFormServices').factory('validatorService', function(validators) {
+    return function(scope) {
+      var dispatchResult, errors, fields, validateAll, validateField, values;
+      fields = {};
+      values = {};
+      errors = {};
+      validateField = function(name) {
+        var field, rule, _i, _len, _ref;
+        field = fields[name];
+        if (field.validation != null) {
+          _ref = field.validation;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            rule = _ref[_i];
+            if (validators[rule.validator] != null) {
+              if (validators[rule.validator](name, values, rule) === false) {
+                errors[name] = rule.options.message;
+                dispatchResult(name, errors[name]);
+                return rule.options.message;
+              }
+            }
+          }
         }
+        delete errors[name];
+        dispatchResult(name);
+        return null;
+      };
+      validateAll = function() {
+        var f;
+        for (f in fields) {
+          dispatchResult(f, validateField(f));
+        }
+        if (errors.length !== 0) {
+          return false;
+        } else {
+          return true;
+        }
+      };
+      dispatchResult = function(name, result) {
+        var dest, ok;
+        dest = 'validation_' + name;
+        ok = result === null ? true : false;
+        return scope.$broadcast(dest, {
+          'ok': ok,
+          'msg': result
+        });
+      };
+      scope.$on('register', function(event, field) {
+        event.stopPropagation();
+        fields[field.name] = field;
+        return values[field.name] = null;
+      });
+      scope.$on('valueChange', function(event, data) {
+        event.stopPropagation();
+        values[data.name] = data.value;
+        delete errors[data.name];
+        return dispatchResult(data.name, null);
+      });
+      scope.$on('submit', function(event) {
+        event.stopPropagation();
+        return validateAll();
+      });
+      return scope.$on('reset', function(event) {});
+    };
+  });
+
+  angular.module('CoolFormServices').factory('valueService', function() {
+    return function(scope, field, defaultValue, onOk, onError) {
+      var reset;
+      reset = function() {
+        return scope.value = field.value != null ? field.value : defaultValue;
+      };
+      scope.$watch('value', function(v, o) {
         return scope.$emit('valueChange', {
           name: field.name,
           value: scope.value
         });
       });
-      return scope.$on('validation', function(event, args) {
-        event.stopPropagation();
-        if (args.ok) {
-          scope.error = false;
-          if (onOk != null) {
-            return onOk();
-          }
-        } else {
-          scope.error = args.msg;
-          if (onError) {
-            return onError(args.msg);
-          }
+      scope.$on('validation_' + field.name, function(event, error) {
+        scope.error = error;
+        if (error.ok === true && (onOk != null)) {
+          onOk();
+        }
+        if (error.ok === false && (onError != null)) {
+          return onError();
         }
       });
+      reset();
+      return scope.$emit('register', field);
     };
   });
-
-  angular.module('CoolFormValidatorService', []).factory('validationService', function() {});
 
 }).call(this);
