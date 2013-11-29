@@ -1,0 +1,22 @@
+<div class="row">
+  <ul class="nav nav-tabs">
+	<li ng-repeat="page in definition.pages" ng-class="{active: isCurrent($index)}">
+	  <a ng-click="moveTo($index)" href="">
+		{{ page.title }}
+	  </a>
+	<li>
+  </ul>
+</div>
+
+<div ng-repeat="page in definition.pages">
+  <coolform-page ng-show="isCurrent($index)" page="page"></coolform-page>
+</div>
+
+<div ng-hide="isLast()" class="well well-sm">
+  <button ng-click="moveToNext()" type="button" class="btn btn-primary">
+	<span class="glyphicon glyphicon-arrow-right"></span>
+	{{ nextTitle() }}
+  </button>
+</div>
+
+<coolform-submit ng-show="isLast()" definition="definition"></coolform-submit>
