@@ -17,8 +17,10 @@ template_files = [
     'field',
     'header',
     'line',
+    'page',
     'submit',
     'text',
+    'wizard',
 ]
 
 coffee_files = [
@@ -28,8 +30,10 @@ coffee_files = [
     'directives/field',
     'directives/header',
     'directives/line',
+    'directives/page',
     'directives/submit',
     'directives/text',
+    'directives/wizard',
     'validators/email',
     'validators/minsize',
     'validators/notblank',
