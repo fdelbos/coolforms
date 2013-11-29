@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row">
+
+	<div class="col-md-4">
+	  <div class="panel panel-default">
+		<div class="panel-heading">
+		  <div class="pull-right">
+			<button ng-click="showCode()" type="button" class="btn btn-primary btn-xs">{{ code.title }}</button>
+		  </div>
+		  <h3 class="panel-title">name</h3>
+		</div>
+		<div class="panel-body" ng-transclude>
+		</div>
+	  </div>
+	</div>
+
+	<div class="col-md-8" ng-show="!code.display">
+	  <coolform url="{{ url }}"></coolform>
+	</div>
+
+	<div class="col-md-8" ng-show="code.display">
+	  <div ui-ace="{
+		useWrapMode : true,
+		showGutter: true,
+		theme:'twilight',
+		mode: 'json'
+		}" ></div>
+	</div>
+
+
+  </div>
+</div>
