@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # 
-# run.py
+# mk.py
 # 
 # Created by Frederic DELBOS <fred.delbos@gmail.com> on Nov 22 2013.
 # This file is subject to the terms and conditions defined in
@@ -57,6 +57,9 @@ def build():
 def minify():
     return callsh('uglifyjs %s.js -o %s.min.js' % (outname, outname))
 
+def clean():
+    return callsh('rm -fr %s.coffe %s.js %s.min.js' % (outname, outname, outname))
+
 class FileChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path.split('/')[-1][0] == '.':
@@ -81,9 +84,11 @@ def watch_files():
 if __name__ == "__main__":    
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", help="can be: 'build', 'watch', or 'min'")
+    parser.add_argument("action", help="can be: 'build', 'watch', 'clean', or 'min'")
     args = parser.parse_args()
     action = args.action
+
+    
 
     if action == "build":
         if build() is False:
@@ -92,6 +97,9 @@ if __name__ == "__main__":
 
     elif action == "watch":
         watch_files()
+
+    elif action == "clean":
+        clean()
 
     elif action == "min":
         if build() is False or minify() is False:
