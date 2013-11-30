@@ -7,11 +7,11 @@
 # file 'LICENSE.txt', which is part of this source code package.
 # 
 
-import subprocess, argparse, sys, time, os, httplib, urllib
+import subprocess, argparse, sys, time, os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-template_files = [
+templates = [
     'container',
     'controller',
     'field',
@@ -23,66 +23,50 @@ template_files = [
     'wizard',
 ]
 
-coffee_files = [
-    'init',
-    'directives/container',
-    'directives/controller',
-    'directives/field',
-    'directives/header',
-    'directives/line',
-    'directives/page',
-    'directives/submit',
-    'directives/text',
-    'directives/wizard',
-    'validators/email',
-    'validators/minsize',
-    'validators/notblank',
-    'validators/sameas',
-    'validators/validators',
-    'services/definition',
-    'services/submit',
-    'services/validation',
-    'services/value',
-]
+sources = [
+    'src/coffee/templates.coffee',
+    'src/coffee/init.coffee',
+    'src/coffee/directives/*.coffee',
+    'src/coffee/validators/*.coffee',
+    'src/coffee/services/*.coffee']
 
-outname = "coolforms"
+outname = 'coolforms'
+templates_file = '## generated file do not edit\n\ntemplates =\n%s\n'
+templates_path = 'src/coffee/templates.coffee'
+
+def callsh(cmd):
+    print cmd
+    return True if subprocess.call(cmd, shell=True) == 0 else False
 
 def make_templates():
-    templates = "templates =\n"
-    for name in template_files:
+    gen = ""
+    for name in templates:
         fd = open(os.path.join('./src/html/', name + '.html'), 'r')
         content = fd.read()
         fd.close()
-        templates += "  %s: \"\"\"%s\"\"\"\n" % (name, content)
+        gen += "  %s: \"\"\"%s\"\"\"\n" % (name, content)
+    fd = open(templates_path, 'w')
+    fd.write(templates_file % gen)
+    fd.close()
     return templates
 
-def make_coffees():
-    coffees = ""
-    for name in coffee_files:
-        fd = open(os.path.join('./src/coffee/',  name + '.coffee'), 'r')
-        content = fd.read()
-        fd.close()
-        coffees += "%s\n" % content
-    return coffees
+def build():
+    make_templates()    
+    return callsh('coffee -j %s.coffee -c %s'  % (outname, " ".join(sources)))
 
-def make_build():
-    print "building %s.js" % outname
-    content = "## generated file do not edit\n\n%s\n%s" % (make_templates(), make_coffees())
-    fd = open('%s.coffee' % outname, 'w')
-    fd.write(content)
-    fd.close()
-    return True if subprocess.call(['coffee', '--compile', '%s.coffee' % outname]) == 0 else False
+def minify():
+    return callsh('uglifyjs %s.js -o %s.min.js' % (outname, outname))
 
 class FileChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path.split('/')[-1][0] == '.':
             return
         print "change detected at: %s" % event.src_path
-        if make_build() is False:
+        if build() is False:
             print "build failed!"
 
 def watch_files():
-    make_build()
+    build()
     event_handler = FileChangeHandler()
     observer = Observer()
     observer.schedule(event_handler, "./src", recursive=True)
@@ -94,50 +78,25 @@ def watch_files():
         observer.stop()
     observer.join()
 
-def minify():
-    fd = open('%s.js' % outname, 'r')
-    js = fd.read()
-    fd.close()    
-    params = urllib.urlencode([
-        ('js_code', js),
-        ('compilation_level', 'WHITESPACE_ONLY'),
-        ('output_format', 'text'),
-        ('output_info', 'compiled_code'),
-    ])
-    headers = {"Content-type": "application/x-www-form-urlencoded"}
-    conn = httplib.HTTPConnection('closure-compiler.appspot.com')
-    conn.request('POST', '/compile', params, headers)
-    response = conn.getresponse()
-    data = response.read()
-    fd = open('%s.min.js' % outname, 'w')
-    fd.write(data)
-    fd.close()
-    conn.close()
-
 if __name__ == "__main__":    
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", help="can be: 'build', 'watch', or 'minify'")
+    parser.add_argument("action", help="can be: 'build', 'watch', or 'min'")
     args = parser.parse_args()
     action = args.action
 
     if action == "build":
-        if make_build() is False:
+        if build() is False:
             print "build failed!"
             sys.exit(1)
 
     elif action == "watch":
-        print "watching for file change"
         watch_files()
 
-    elif action == "minify":
-        print "minifying"
-        if make_build() == False:
+    elif action == "min":
+        if build() is False or minify() is False:
             print "build failed!"
             sys.exit(1)
-        print("sending request to google closure")
-        minify()
-        print("done generating %s.min.js" % outname)
 
     else:
         print "Unknow command!"
