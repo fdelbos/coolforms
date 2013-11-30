@@ -15,17 +15,23 @@ angular.module('CoolForm').
         scope.definition = definitionService(scope.url).then((definition) ->
           scope.definition = definition.form
         )
-  
-      scope.$watch('definition', (v) ->
-        console.log v
-        if v? and v.pages? then validatorService(scope)
+
+      else
+        if scope.form?
+          scope.definition = scope.form.form
+          console.log scope.form
+        
+      scope.$watch('form', (v) ->
+        if v? and v.form?
+          scope.definition = scope.form.form
+          validatorService(scope)
       )
 
     return {
       restrict: 'E'
       scope:
         url: '@?'
-        definition: '=?'
+        form: '=?'
       template: templates.controller
       link: l
       replace: true
