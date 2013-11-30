@@ -10,19 +10,22 @@ angular.module('CoolForm').
   directive('coolform', (definitionService, validatorService) ->
 
     l = (scope, elem, attr) ->
-      scope.definition = null
-      if scope.url then scope.definition = definitionService(scope.url).then((definition) ->
-        scope.definition = definition.form
-      )
+      
+      if scope.url?
+        scope.definition = definitionService(scope.url).then((definition) ->
+          scope.definition = definition.form
+        )
   
       scope.$watch('definition', (v) ->
-        if !v.pages then return else validatorService(scope)
+        console.log v
+        if v? and v.pages? then validatorService(scope)
       )
 
     return {
       restrict: 'E'
       scope:
-        url: '@'
+        url: '@?'
+        definition: '=?'
       template: templates.controller
       link: l
       replace: true
