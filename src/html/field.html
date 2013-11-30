@@ -10,9 +10,7 @@
 	</ng-switch>
   </div>
   
-  <em><small ng-hide="data.error.ok" class="text-danger">{{ data.error.msg }}</small></em>
-  <p class="help-block" ng-if="field.help">{{ field.help }}</p>
-
-  
+  <p ng-hide="data.error.ok" class="help-block">{{ data.error.msg }}</p>
+  <p ng-show="data.error.ok" class="help-block" ng-if="field.help">{{ field.help }}</p>
     
 </div>
