@@ -9,16 +9,18 @@
 angular.module('CoolFormDirectives').
   directive('coolformField', ->
 
-    l = (scope, elem, attr) ->
-      scope.data =
-        error:
-          ok: true
-          msg: null
-      
+    l = (scope) ->
+      scope.error = false
+      scope.service.watchFieldValidation(scope.field.name,
+        () -> scope.error = false,
+        (e) -> scope.error = e)
+
+                  
     return {
       restrict: 'E'
       scope:
         field: '='
+        service: '='
       template: templates.field
       link: l
     }
