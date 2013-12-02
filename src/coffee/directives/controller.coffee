@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolForm').
-  directive('coolform', (definitionService, validatorService) ->
+  directive('coolform', (definitionService, registrationService) ->
 
     l = (scope, elem, attr) ->
       
@@ -24,7 +24,8 @@ angular.module('CoolForm').
       scope.$watch('form', (v) ->
         if v? and v.form?
           scope.definition = scope.form.form
-          validatorService(scope)
+          scope.service = registrationService()
+          scope.service.registerController(scope, scope.definition)
       )
 
     return {
