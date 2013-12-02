@@ -1,7 +1,9 @@
 <div class="row">
   <ul class="nav nav-tabs">
 	<li ng-repeat="page in definition.pages" ng-class="{active: isCurrent($index)}">
-	  <a ng-click="moveTo($index)" href="">
+	  <a ng-click="moveTo($index)"
+		 ng-class="{'text-danger': errorsOnPage($index)}"
+		 href="">
 		{{ page.title }}
 	  </a>
 	<li>
@@ -9,7 +11,8 @@
 </div>
 
 <div ng-repeat="page in definition.pages">
-  <coolform-page ng-show="isCurrent($index)" page="page"></coolform-page>
+  <coolform-page ng-show="isCurrent($index)" page="page" service="service">
+  </coolform-page>
 </div>
 
 <div ng-hide="isLast()" class="well well-sm">
@@ -19,4 +22,5 @@
   </button>
 </div>
 
-<coolform-submit ng-show="isLast()" definition="definition"></coolform-submit>
+<coolform-submit ng-show="isLast()" service="service" definition="definition">
+</coolform-submit>
