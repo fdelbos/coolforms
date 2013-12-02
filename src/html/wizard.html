@@ -16,7 +16,10 @@
 </div>
 
 <div ng-hide="isLast()" class="well well-sm">
-  <button ng-click="moveToNext()" type="button" class="btn btn-primary">
+  <button ng-click="moveToNext()" 
+		  type="button"
+		  class="btn btn-primary"
+		  ng-class="{disabled: errorsOnPage(current)}">
 	<span class="glyphicon glyphicon-arrow-right"></span>
 	{{ nextTitle() }}
   </button>
