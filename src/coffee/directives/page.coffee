@@ -8,12 +8,13 @@
 
 
 angular.module('CoolFormDirectives').
-  directive('coolformPage', () ->
-        
+  directive('coolformPage', ->
+          
     return {
       restrict: 'E'
       scope:
         page: '='
+        service: '='
       template: templates.page
     }
   )
