@@ -7,16 +7,18 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformWizard', () ->
+  directive('coolformWizard', ->
 
     l = (scope) ->
       scope.current = 0
-  
+
+      validatePage = (p) -> scope.service.validateFields(pageFields[p])
+
       scope.moveTo = (index) ->
-        scope.current = index
+        if validatePage(scope.current) is true then scope.current = index
 
       scope.moveToNext = ->
-        scope.current += 1
+        scope.moveTo(scope.current + 1)
 
       scope.isCurrent = (index) ->
         if scope.current == index then true else false
@@ -28,10 +30,30 @@ angular.module('CoolFormDirectives').
         if scope.current + 1 < scope.definition.pages.length
           scope.definition.pages[scope.current + 1].title
 
+      scope.errorsOnPage = (p) -> !$.isEmptyObject scope.errors[p]
+
+      watchField = (page, fieldName) ->
+        scope.service.watchFieldValidation(fieldName,
+          () -> delete scope.errors[page][fieldName] 
+          (e) -> scope.errors[page][fieldName] = e)
+          
+      scope.errors = []
+      pageFields = []
+      p = 0
+      for page in scope.definition.pages
+        scope.errors[p] = {}
+        pageFields[p] = []
+        for line in page.lines
+          for field in line.fields
+            pageFields[p].push(field.name)
+            watchField(p, field.name)
+        p += 1
+
     return {
       restrict: 'E'
       scope:
         definition: '='
+        service: '='
       template: templates.wizard
       link: l
     }
