@@ -5,5 +5,9 @@
 
 <div class="row" ng-repeat="line in page.lines">
   <coolform-header ng-if="line.header" header="line.header"></coolform-header>
-  <coolform-line ng-if="line.fields" fields="line.fields"></coolform-line>
+  <coolform-line 
+	 ng-if="line.fields" 
+	 fields="line.fields" 
+	 service="service">
+  </coolform-line>
 </div>

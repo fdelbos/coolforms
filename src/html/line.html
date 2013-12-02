@@ -1,5 +1,8 @@
 <div ng-repeat="field in fields">
   <div class="col-md-{{ field.size * 3 }}" >
-	<coolform-field field="field" error="error"></coolform-field>
+	<coolform-field 
+	   field="field" 
+	   service="service">
+	</coolform-field>
   </div>
 </div>
