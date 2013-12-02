@@ -7,11 +7,13 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformText', (valueService) ->
+  directive('coolformText', ->
 
     l = (scope) ->
-      valueService(scope, scope.field, "")  
-          
+      onChange = scope.service.registerField(scope.field.name)
+      scope.value = if scope.field.value then value else ""
+      scope.$watch('value', (v, o) -> onChange(v))
+                    
       setType = (options) ->
         scope.type = "text"
         if options? and options.password? and options.password is true
@@ -22,7 +24,7 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         field: '='
-        error: '='
+        service: '='
       template: templates.text
       link: l
     }
