@@ -7,15 +7,17 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformSubmit', (submitService) ->
+  directive('coolformSubmit', ->
 
     l = (scope) ->
-      scope.submit =  -> submitService(scope)
+      scope.submit = ->
+        scope.service.validateAllFields()
 
     return {
       restrict: 'E'
       scope:
         definition: '='
+        service: '='
       template: templates.submit
       link: l
     }
