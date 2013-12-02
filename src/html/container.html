@@ -3,15 +3,19 @@
 	
 	<div ng-if="definition.title || definition.description" class="row">
 	  <h3 ng-if="definition.title">{{ definition.title }}</h3>
-	  <div ng-if="definition.description" class="well well-sm">{{ definition.description }}</div>
+	  <div ng-if="definition.description" class="well well-sm">
+		{{ definition.description }}
+	  </div>
 	</div>
 
-	<coolform-wizard ng-if="wizard" definition="definition"></coolform-wizard>
+	<coolform-wizard ng-if="wizard" definition="definition" service="service">
+	</coolform-wizard>
 
 	<div ng-if="page">
-	  <coolform-page page="page"></coolform-page>
+	  <coolform-page page="page" service="service"></coolform-page>
 	  <div class="row">
-		<coolform-submit definition="definition"></coolform-submit>
+		<coolform-submit definition="definition" service="service">
+		</coolform-submit>
 	  </div>
 	</div>	
 
