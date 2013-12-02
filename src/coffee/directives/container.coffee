@@ -22,6 +22,7 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         definition: '='
+        service: '='
       template: templates.container
       link: l
     }
