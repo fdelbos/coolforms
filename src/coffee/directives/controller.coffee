@@ -7,12 +7,12 @@
 ## 
 
 angular.module('CoolForm').
-  directive('coolform', (definitionService, registrationService) ->
+  directive('coolform', (networkService, registrationService) ->
 
     l = (scope, elem, attr) ->
       
       if scope.url?
-        scope.definition = definitionService(scope.url).then((definition) ->
+        scope.definition = networkService().getJSON(scope.url).then((definition) ->
           scope.definition = definition.form
         )
 
