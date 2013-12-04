@@ -7,11 +7,11 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformSubmit', ->
+  directive('coolformSubmit', (networkService)->
 
     l = (scope) ->
       scope.submit = ->
-        scope.service.validateAllFields()
+        if scope.service.validateAll() is false then return
 
     return {
       restrict: 'E'
