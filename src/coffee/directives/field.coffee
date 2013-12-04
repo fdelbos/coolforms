@@ -11,7 +11,7 @@ angular.module('CoolFormDirectives').
 
     l = (scope) ->
       scope.error = false
-      scope.service.watchFieldValidation(scope.field.name,
+      scope.service.watchField(scope.field.name,
         () -> scope.error = false,
         (e) -> scope.error = e)
 
