@@ -8,6 +8,17 @@
 
 angular.module('CoolFormValidators').
   factory('validatorSameAs', ->
-    return (name, values, rule) ->
+
+    validator = (name, values, rule) ->
       if values[name] == values[rule.options.field] then true else false
+
+    init = (name, rule, services) ->
+      services.watchField(rule.options.field, null, null, (value) ->
+        services.validateField(name)
+      )
+
+    return {
+      validator: validator
+      init: init
+    }       
   )
