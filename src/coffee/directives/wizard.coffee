@@ -32,8 +32,8 @@ angular.module('CoolFormDirectives').
 
       scope.errorsOnPage = (p) -> !$.isEmptyObject scope.errors[p]
 
-      watchField = (page, fieldName) ->
-        scope.service.watchFieldValidation(fieldName,
+      watch = (page, fieldName) ->
+        scope.service.watchField(fieldName,
           () -> delete scope.errors[page][fieldName] 
           (e) -> scope.errors[page][fieldName] = e)
           
@@ -46,7 +46,7 @@ angular.module('CoolFormDirectives').
         for line in page.lines
           for field in line.fields
             pageFields[p].push(field.name)
-            watchField(p, field.name)
+            watch(p, field.name)
         p += 1
 
     return {
