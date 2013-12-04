@@ -7,10 +7,26 @@
 ## 
 
 angular.module('CoolFormServices').
-  factory('definitionService', ($q) ->
-    return (url) ->
-      deferred = $q.defer()
-      $.getJSON(url, (data) ->
-        deferred.resolve(data))
-      return deferred.promise
+  factory('networkService', ($q) ->
+    return ->
+
+      getJSON = (url) ->
+        deferred = $q.defer()
+        $.getJSON(url, (data) ->
+          deferred.resolve(data))
+        return deferred.promise
+
+      postForm = (url, data, onSuccess, onError) ->
+        cfg =
+          type: "POST"
+          url: url
+          data: data
+          success: onSuccess
+          error: onError
+        $.ajax(cfg)
+
+      net =
+        getJSON: getJSON
+
+      return net
   )
