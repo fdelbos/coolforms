@@ -11,10 +11,10 @@
     });
   });
 
-  angular.module('app').directive('demo', function(definitionService) {
+  angular.module('app').directive('demo', function(networkService) {
     var l;
     l = function(scope) {
-      scope.definition = definitionService(scope.url).then(function(def) {
+      scope.definition = networkService().getJSON(scope.url).then(function(def) {
         scope.form = def;
         return scope.jsonString = JSON.stringify(def, null, 2);
       });
