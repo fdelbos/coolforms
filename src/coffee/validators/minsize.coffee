@@ -8,6 +8,12 @@
 
 angular.module('CoolFormValidators').
   factory('validatorMinSize', ->
-    return (name, values, rule) ->
+
+    validator = (name, values, rule) ->
       if values[name].length >= rule.options.size then true else false
+
+    return {
+      validator: validator
+      init: null
+    }
   )

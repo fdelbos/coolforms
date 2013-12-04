@@ -8,7 +8,13 @@
 
 angular.module('CoolFormValidators').
   factory('validatorEmail', ->
-    return (name, values, rule) ->
+      
+    validator = (name, values, rule) ->
       p = /^([\w.-]+)@([\w.-]+)\.([a-zA-Z.]{2,6})$/i;
       if values[name] and values[name].match p then true else false
+
+    return {
+      validator: validator
+      init: null
+    }
   )
