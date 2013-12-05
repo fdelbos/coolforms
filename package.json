@@ -7,6 +7,7 @@
 		"grunt-contrib-uglify": "latest",
 		"grunt-contrib-watch": "latest",
 		"grunt-contrib-coffee": "latest",
-		"grunt-contrib-connect": "latest"
+		"grunt-contrib-connect": "latest",
+		"grunt-karma": "latest"
   }
 }
