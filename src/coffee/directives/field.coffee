@@ -11,10 +11,11 @@ angular.module('CoolFormDirectives').
 
     l = (scope) ->
       scope.error = false
-      scope.service.watchField(scope.field.name,
-        () -> scope.error = false,
-        (e) -> scope.error = e)
-
+      
+      eventHandlers =
+        ok: () -> scope.error = false
+        error: (e) -> scope.error = e
+      scope.service.watchField(scope.field.name, eventHandlers)
                   
     return {
       restrict: 'E'

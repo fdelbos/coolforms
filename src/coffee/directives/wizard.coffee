@@ -33,9 +33,10 @@ angular.module('CoolFormDirectives').
       scope.errorsOnPage = (p) -> !$.isEmptyObject scope.errors[p]
 
       watch = (page, fieldName) ->
-        scope.service.watchField(fieldName,
-          () -> delete scope.errors[page][fieldName] 
-          (e) -> scope.errors[page][fieldName] = e)
+        events =
+          ok: () -> delete scope.errors[page][fieldName]
+          error: (e) -> scope.errors[page][fieldName] = e 
+        scope.service.watchField(fieldName, events)
           
       scope.errors = []
       pageFields = []
