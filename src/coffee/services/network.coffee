@@ -16,17 +16,20 @@ angular.module('CoolFormServices').
           deferred.resolve(data))
         return deferred.promise
 
-      postForm = (url, data, onSuccess, onError) ->
+      sendForm = (params, data) ->
         cfg =
-          type: "POST"
-          url: url
+          type: params.method
+          url: params.url
+          contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
           data: data
-          success: onSuccess
-          error: onError
+          success: params.success
+          error: params.error
+          headers: params.headers
         $.ajax(cfg)
 
       net =
         getJSON: getJSON
+        sendForm: sendForm
 
       return net
   )
