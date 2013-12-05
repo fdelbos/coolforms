@@ -6,6 +6,10 @@
 ## file 'LICENSE.txt', which is part of this source code package.
 ## 
 
+fs = require('fs')
+path = require('path')
+glob = require("glob")
+
 module.exports = (grunt) ->
 
   coffee_sources = [
@@ -14,7 +18,8 @@ module.exports = (grunt) ->
     "src/coffee/validators/*.coffee",
     "src/coffee/services/*.coffee"]
   html_sources =  "src/html/*.html"
-  sources = coffee_sources.concat ["src/coffee/templates.coffee"]
+  templates_source = "src/coffee/templates.coffee"
+  sources = coffee_sources.concat [templates_source]
 
   config =
     pkg: grunt.file.readJSON('package.json')
@@ -62,17 +67,13 @@ module.exports = (grunt) ->
     'templates',
     'Generate a coffeescript files containing the html templates.',
     ->
-      dest = 'src/coffee/templates.coffee'
       tmpl = "templates =\n"
-      fs = require('fs')
-      path = require('path')
-      glob = require("glob")
       for f in glob.sync(html_sources)
         name = (path.basename(f, '.html'))
         content = fs.readFileSync(f)
         tmpl += "  #{name}: \"\"\"#{content}\"\"\"\n"
-      fs.writeFileSync(dest, tmpl)
-      grunt.log.writeln("File #{dest} created.")
+      fs.writeFileSync(templates_source, "templates =\n#{tmpl}\n")
+      grunt.log.writeln("File #{templates_source} created.")
     )
 
   grunt.registerTask('all', [
@@ -81,5 +82,6 @@ module.exports = (grunt) ->
     'uglify'])
 
   grunt.registerTask('default', ['all'])
+  grunt.registerTask('test', ['karma'])
   grunt.registerTask('server', ['all', 'connect', 'watch'])
-  
+  grunt.registerTask('dev', ['all', 'connect', 'watch'])
