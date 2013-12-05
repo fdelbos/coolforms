@@ -32,7 +32,7 @@ angular.module('CoolFormServices').
             if validators[rule.validator] and validators[rule.validator].validator?
               if validators[rule.validator].validator(fieldName, values, rule) is false
                 errors[fieldName] = rule.options.message
-                events.handle(fieldName, "errors",rule.options.message)
+                events.handle(fieldName, "error",rule.options.message)
                 return false
         removeError(fieldName)
         return true
