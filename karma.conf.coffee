@@ -5,14 +5,16 @@ module.exports = (config) ->
   config.set
 
     # base path, that will be used to resolve all patterns, eg. files, exclude
-    basePath: ''
+    basePath: '.'
 
     # frameworks to use
     frameworks: ['jasmine']
 
     # list of files / patterns to load in the browser
     files: [
-      'coolforms.js'
+      'test/angular.js',
+      'coolforms.js',
+      'test/*.coffee'
     ]
 
     # list of files to exclude
@@ -35,7 +37,7 @@ module.exports = (config) ->
     logLevel: config.LOG_INFO
 
     # enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false
+    autoWatch: true
 
     # Start these browsers, currently available:
     # - Chrome
