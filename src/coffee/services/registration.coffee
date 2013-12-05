@@ -7,13 +7,18 @@
 ## 
 
 angular.module('CoolFormServices').
-  factory('registrationService', (validationService, eventService, networkService) ->
+  factory('registrationService', (
+    validationService,
+    eventService,
+    networkService,
+    displayService) ->
 
     return ()->
       form = null
       events = eventService()
       validation = validationService(events)
       values = {}
+      display = displayService(events, values)
       
       setFields = (pages) ->
         p = 0
@@ -49,6 +54,7 @@ angular.module('CoolFormServices').
         networkService().sendForm(params, values)
 
       services =
+        display: display
         registerController: registerController
         registerField: registerField
         validateField: (fieldName) -> validation.validateField(fieldName, values)
