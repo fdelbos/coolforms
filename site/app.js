@@ -10,6 +10,8 @@
       templateUrl: 'demo/post.html'
     }).when('/demo/wizard', {
       templateUrl: 'demo/wizard.html'
+    }).when('/demo/show', {
+      templateUrl: 'demo/show.html'
     });
   });
 
