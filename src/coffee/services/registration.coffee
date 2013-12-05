@@ -29,8 +29,8 @@ angular.module('CoolFormServices').
         validation.removeError(fieldName)
         events.handle(fieldName, "change", value)
 
-      registerField = (fieldName, onOk, onError, onChange) ->
-        events.watchField(fieldName, onOk, onError, onChange)
+      registerField = (fieldName, eventHandlers) ->
+        events.watchField(fieldName, eventHandlers)
         return (value) ->
           valueChange(fieldName, value)
 
