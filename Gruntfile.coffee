@@ -47,11 +47,16 @@ module.exports = (grunt) ->
         files: html_sources
         tasks: ['templates', 'coffee']
 
+    karma:
+      unit:
+        configFile: 'karma.conf.coffee'
+
   grunt.initConfig config
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-connect'
+  grunt.loadNpmTasks 'grunt-karma'
 
   grunt.registerTask(
     'templates',
