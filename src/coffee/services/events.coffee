@@ -10,21 +10,21 @@ angular.module('CoolFormServices').
   factory('eventService',  ->
 
     return ->
-      _handlers =
+      handlers =
         ok: {}
-        errors: {}
+        error: {}
         change: {}
 
       handle = (fieldName, type, data) ->
-        if !_handlers[type]? or !_handlers[type][fieldName]? then return
-        for fn in _handlers[type][fieldName]
+        if !handlers[type]? or !handlers[type][fieldName]? then return
+        for fn in handlers[type][fieldName]
           if data? then fn(data) else fn()
     
       watchField = (fieldName, eventHandlers) ->
         for type of eventHandlers
-          if _handlers[type]?
-            if _handlers[type][fieldName]? then _handlers[type][fieldName] = []
-            _handlers[type][fieldName].push(eventHandlers[type])
+          if handlers[type]?
+            if !handlers[type][fieldName]? then handlers[type][fieldName] = []
+            handlers[type][fieldName].push(eventHandlers[type])
 
       event =
         handle: handle
