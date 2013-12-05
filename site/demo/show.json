@@ -15,11 +15,10 @@
 				 {"name":"field2",
 				  "type":"text",
 				  "label":"Another field!",
+				  "size":2,
 				  "show_when":[
-					  {"field": "field",
-					  "value": "show"}
-				  ],
-				  "size":2}
+					  {"field": "field1",
+					  "values": ["show"]}]}
 			 ]}
 		 ]}
 	]}
