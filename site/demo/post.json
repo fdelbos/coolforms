@@ -1,0 +1,20 @@
+{"form":{
+	"name":"demo",
+	"action":"/some_url",
+	"method":"POST",
+	"submit":"Submit",
+	"reset":"Reset",
+	"headers": {
+		"csrf_header_token": "my csrf header token",
+		"some_other_field": "foo bar..."
+	},
+	"pages":[
+		{"lines":[
+			 {"fields": [
+				 {"name":"field",
+				  "type":"text",
+				  "label":"Field",
+				  "size":4}]}
+		 ]}
+	]}
+}

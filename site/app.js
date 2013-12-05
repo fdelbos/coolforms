@@ -6,6 +6,8 @@
       templateUrl: 'home.html'
     }).when('/demo/simple', {
       templateUrl: 'demo/simple.html'
+    }).when('/demo/post', {
+      templateUrl: 'demo/post.html'
     }).when('/demo/wizard', {
       templateUrl: 'demo/wizard.html'
     });
