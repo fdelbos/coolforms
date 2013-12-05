@@ -7,9 +7,10 @@
 ## 
 
 angular.module('CoolFormServices').
-  factory('registrationService', (validationService, eventService) ->
+  factory('registrationService', (validationService, eventService, networkService) ->
 
-    return ()->      
+    return ()->
+      form = null
       events = eventService()
       validation = validationService(events)
       values = {}
@@ -33,9 +34,20 @@ angular.module('CoolFormServices').
         return (value) ->
           valueChange(fieldName, value)
 
-      registerController = (controllerScope, form) ->
+      registerController = (controllerScope, formObj) ->
+        form = formObj
         setFields(form.pages)
-      
+
+      submit = ->
+        if validation.validateAll(values) is false then return
+        params =
+          url: form.url,
+          method: if form.method? then form.method else "POST"
+          success: -> console.log "success"
+          error: -> console.log "error"
+          headers: if form.headers? then form.headers else {}
+        networkService().sendForm(params, values)
+
       services =
         registerController: registerController
         registerField: registerField
@@ -43,6 +55,7 @@ angular.module('CoolFormServices').
         validateFields: (fieldList) -> validation.validateFields(fieldList, values)
         validateAll: -> validation.validateAll(values)
         watchField: events.watchField
+        submit: submit
 
       return services
   )
