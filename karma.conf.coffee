@@ -5,16 +5,17 @@ module.exports = (config) ->
   config.set
 
     # base path, that will be used to resolve all patterns, eg. files, exclude
-    basePath: '.'
+    basePath: './src/test/'
 
     # frameworks to use
     frameworks: ['jasmine']
 
     # list of files / patterns to load in the browser
     files: [
-      'test/angular.js',
-      'coolforms.js',
-      'test/*.coffee'
+      'angular.js',
+      'angular-mocks.js',
+      '../../coolforms.js',
+      'services/*.coffee'
     ]
 
     # list of files to exclude
