@@ -11,7 +11,7 @@ angular.module('CoolFormDirectives').
 
     l = (scope) ->
       scope.submit = ->
-        if scope.service.validateAll() is false then return
+        scope.service.submit()
 
     return {
       restrict: 'E'
