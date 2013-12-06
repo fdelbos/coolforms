@@ -65,14 +65,9 @@ module.exports = (grunt) ->
 
   grunt.registerTask(
     'templates',
-    'Generate a coffeescript files containing the html templates.',
-    ->
-      tmpl = "templates =\n"
-      for f in glob.sync(html_sources)
-        name = (path.basename(f, '.html'))
-        content = fs.readFileSync(f)
-        tmpl += "  #{name}: \"\"\"#{content}\"\"\"\n"
-      fs.writeFileSync(templates_source, "templates =\n#{tmpl}\n")
+    'Generate a coffeescript files containing the html templates.', ->
+      tmpl = glob.sync(html_sources).map (f) -> "  #{path.basename(f, '.html')}: \"\"\"#{fs.readFileSync(f)}\"\"\"\n"
+      fs.writeFileSync(templates_source, "templates =\n" + tmpl.join('\n'))
       grunt.log.writeln("File #{templates_source} created.")
     )
 
