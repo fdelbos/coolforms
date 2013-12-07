@@ -8,15 +8,15 @@
 
 angular.module('CoolFormValidators').
   factory('validators',
-    (validatorEmail,
-    validatorMinSize,
-    validatorNotBlank,
-    validatorSameAs)->
+    (emailValidator,
+    minSizeValidator,
+    notBlankValidator,
+    sameAsValidator)->
       validators =
-        email:  validatorEmail
-        min_size: validatorMinSize
-        not_blank: validatorNotBlank
-        same_as: validatorSameAs
+        email:  emailValidator
+        min_size: minSizeValidator
+        not_blank: notBlankValidator
+        same_as: sameAsValidator
       return validators
   )
 

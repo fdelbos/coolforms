@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormValidators').
-  factory('validatorSameAs', ->
+  factory('sameAsValidator', ->
 
     validator = (name, values, rule) ->
       if values[name] == values[rule.options.field] then true else false

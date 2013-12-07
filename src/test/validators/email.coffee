@@ -10,21 +10,21 @@ describe 'email tests', ->
 
   beforeEach(module('CoolFormValidators'))
 
-  it 'validate a correct email', inject((validatorEmail) ->
-    expect(validatorEmail.validator('f', {'f':'fred.delbos@gmail.com'})).toEqual true
-    expect(validatorEmail.validator('f', {'f':'fred@mail.oko.xasxa.com'})).toEqual true
+  it 'validate a correct email', inject((emailValidator) ->
+    expect(emailValidator.validator('f', {'f':'fred.delbos@gmail.com'})).toEqual true
+    expect(emailValidator.validator('f', {'f':'fred@mail.oko.xasxa.com'})).toEqual true
   )
 
-  it 'wrong email', inject((validatorEmail) ->
-    expect(validatorEmail.validator('f', {'f': null})).toEqual false
-    expect(validatorEmail.validator('f', {})).toEqual false
-    expect(validatorEmail.validator('f', {'f': '  '})).toEqual false
-    expect(validatorEmail.validator('f', {'f': 42})).toEqual false
+  it 'wrong email', inject((emailValidator) ->
+    expect(emailValidator.validator('f', {'f': null})).toEqual false
+    expect(emailValidator.validator('f', {})).toEqual false
+    expect(emailValidator.validator('f', {'f': '  '})).toEqual false
+    expect(emailValidator.validator('f', {'f': 42})).toEqual false
   )
   
-  it 'incorrect emails', inject((validatorEmail) ->
-    expect(validatorEmail.validator('f', {'f': "dadsa.com"})).toEqual false
-    expect(validatorEmail.validator('f', {'f': "dadsa@com"})).toEqual false
-    expect(validatorEmail.validator('f', {'f': "@dasda.com"})).toEqual false
+  it 'incorrect emails', inject((emailValidator) ->
+    expect(emailValidator.validator('f', {'f': "dadsa.com"})).toEqual false
+    expect(emailValidator.validator('f', {'f': "dadsa@com"})).toEqual false
+    expect(emailValidator.validator('f', {'f': "@dasda.com"})).toEqual false
   )
 

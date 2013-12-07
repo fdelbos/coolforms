@@ -14,15 +14,15 @@ describe 'minsize tests', ->
     options:
       size: 4
 
-  it 'validate a correct string', inject((validatorMinSize) ->
-    expect(validatorMinSize.validator('f', {'f':'fred.delbos@gmail.com'}, rules)).toEqual true
-    expect(validatorMinSize.validator('f', {'f':'1234'}, rules)).toEqual true
-    expect(validatorMinSize.validator('f', {'f':'234'}, rules)).toEqual false
-    expect(validatorMinSize.validator('f', {'f':'    '}, rules)).toEqual true
+  it 'validate a correct string', inject((minSizeValidator) ->
+    expect(minSizeValidator.validator('f', {'f':'fred.delbos@gmail.com'}, rules)).toEqual true
+    expect(minSizeValidator.validator('f', {'f':'1234'}, rules)).toEqual true
+    expect(minSizeValidator.validator('f', {'f':'234'}, rules)).toEqual false
+    expect(minSizeValidator.validator('f', {'f':'    '}, rules)).toEqual true
   )
 
-  it 'validate wrong stuffs', inject((validatorMinSize) ->
-    expect(validatorMinSize.validator('f', {'f':null}, rules)).toEqual false
-    expect(validatorMinSize.validator('f', {}, rules)).toEqual false
-    expect(validatorMinSize.validator('f', {'f': false}, rules)).toEqual false
+  it 'validate wrong stuffs', inject((minSizeValidator) ->
+    expect(minSizeValidator.validator('f', {'f':null}, rules)).toEqual false
+    expect(minSizeValidator.validator('f', {}, rules)).toEqual false
+    expect(minSizeValidator.validator('f', {'f': false}, rules)).toEqual false
   )

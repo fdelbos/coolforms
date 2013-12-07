@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormValidators').
-  factory('validatorNotBlank', ->
+  factory('notBlankValidator', ->
     validator = (name, values, rule) ->
       v = values[name]
       if v is undefined or v is null then return false

@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormValidators').
-  factory('validatorEmail', ->
+  factory('emailValidator', ->
       
     validator = (name, values, rule) ->
       if !values[name]? or typeof values[name] != "string" then return false
