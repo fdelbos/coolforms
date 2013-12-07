@@ -11,9 +11,10 @@ angular.module('CoolFormValidators').
     validator = (name, values, rule) ->
       v = values[name]
       if v is undefined or v is null then return false
-      if v is true or v is false then return true
-      if v and !isNaN(v) then return true
-      if (v and (v.replace /^\s+|\s+$/g, "").length > 0) then true
+      if typeof v == "boolean" and v is true or v is false then return true
+      if typeof v == "number" then return true
+      if typeof v == "string"
+        if (v.replace /^\s+|\s+$/g, "").length > 0 then return true else false
       else false
 
     return {
