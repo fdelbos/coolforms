@@ -15,7 +15,8 @@ module.exports = (config) ->
       'angular.js',
       'angular-mocks.js',
       '../../coolforms.js',
-      'services/*.coffee'
+      'services/*.coffee',
+      'validators/*.coffee'
     ]
 
     # list of files to exclude
