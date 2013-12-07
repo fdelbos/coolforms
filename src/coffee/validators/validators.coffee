@@ -9,12 +9,14 @@
 angular.module('CoolFormValidators').
   factory('validators',
     (emailValidator,
+    exactSizeValidator,
     maxSizeValidator,
     minSizeValidator,
     notBlankValidator,
     sameAsValidator)->
       validators =
         email:  emailValidator
+        exact_size: exactSizeValidator
         max_size: maxSizeValidator
         min_size: minSizeValidator
         not_blank: notBlankValidator
