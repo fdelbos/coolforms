@@ -24,8 +24,7 @@ angular.module('CoolFormServices').
         p = 0
         for page in pages
           for line in page.lines
-            for field in line.fields
-              validation.initValidation(field, services)
+            line.fields.map (f) -> validation.initValidation(f, services)
           p += 1
 
 
