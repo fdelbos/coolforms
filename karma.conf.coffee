@@ -12,8 +12,8 @@ module.exports = (config) ->
 
     # list of files / patterns to load in the browser
     files: [
-      'angular.js',
-      'angular-mocks.js',
+      'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js'
+      'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-mocks.js',
       '../../coolforms.js',
       'services/*.coffee',
       'validators/*.coffee'
