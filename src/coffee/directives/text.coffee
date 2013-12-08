@@ -10,9 +10,9 @@ angular.module('CoolFormDirectives').
   directive('coolformText', ->
 
     l = (scope) ->
-      onChange = scope.service.registerField(scope.field.name)
+      setValue = scope.service.registerField(scope.field.name)
       scope.value = if scope.field.value then value else ""
-      scope.$watch('value', (v, o) -> onChange(v))
+      scope.$watch('value', (v, o) -> setValue(v))
                     
       setType = (options) ->
         scope.type = "text"
