@@ -55,5 +55,6 @@ angular.module('CoolFormServices').
         validateField: validateField
         validateFields: validateFields
         validateAll: validateAll
+        add: (validatorName, factory) -> validators.add(validatorName, factory)
       }
   )
