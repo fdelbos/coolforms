@@ -21,7 +21,7 @@ angular.module('CoolFormServices').
           if valueIn(values[cond.field], cond.values) then return true
         return false
           
-      shouldHide = (conds) -> !shoudShow(conds)
+      shouldHide = (conds) -> !shouldShow(conds)
 
       register = (conds, cb, checker) ->
         for cond in conds
