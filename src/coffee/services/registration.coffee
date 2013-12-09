@@ -47,6 +47,15 @@ angular.module('CoolFormServices').
           headers: if form.headers? then form.headers else {}
         networkService().sendForm(params, values)
 
+      registerDependencies = (deps) ->
+        for d in deps
+          f = angular.injector([d.module]).get(d.factory)          
+          if d.type == "validator" then validation.add(d.name, f)
+            
+
+      if form.dependencies? then registerDependencies(form.dependencies)
+      setFields(form.pages)
+
       services =
         display: display
         registerField: registerField
@@ -55,7 +64,5 @@ angular.module('CoolFormServices').
         validateAll: -> validation.validateAll(values)
         watchField: events.watchField
         submit: submit
-
-      setFields(form.pages)
       return services
   )
