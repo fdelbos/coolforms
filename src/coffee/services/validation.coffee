@@ -17,25 +17,28 @@ angular.module('CoolFormServices').
       removeError = (fieldName) ->
         delete errors[fieldName]
         events.handle(fieldName, "ok")
-      
+        true
+
+      setError = (fieldName, msg) ->
+        errors[fieldName] = msg
+        events.handle(fieldName, "error", msg)
+        false
+                  
       initValidation = (field, services) ->
         fields[field.name] = field
         if field.validation? then field.validation.map (rule) ->
-          if validators[rule.validator]? and validators[rule.validator].init?
-            validators[rule.validator].init(field.name, rule, services)
-
+          vl = validators.get(rule.validator)
+          if vl? and vl.init? then vl.init(field.name, rule, services)
 
       validateField = (fieldName, values) ->
         field = fields[fieldName]
         if field.validation?
           for rule in field.validation
-            if validators[rule.validator] and validators[rule.validator].validator?
-              if !validators[rule.validator].validator(fieldName, values, rule)
-                errors[fieldName] = rule.options.message
-                events.handle(fieldName, "error",rule.options.message)
-                return false
-        removeError(fieldName)
-        return true
+            vl = validators.get(rule.validator)
+            if vl and vl.validator?
+              if !vl.validator(fieldName, values, rule)
+                return setError(fieldName, rule.options.message)
+        return removeError(fieldName)
 
       validateFields = (fieldList, values) ->
         result = true
