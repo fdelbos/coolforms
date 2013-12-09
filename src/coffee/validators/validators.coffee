@@ -32,7 +32,6 @@ angular.module('CoolFormValidators').
       return {
         get: get
         add: add
-      }
-        
+      }        
   )
 
