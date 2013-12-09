@@ -29,4 +29,5 @@ angular.module('CoolFormServices').
       event =
         handle: handle
         watchField: watchField
+      return event
   )
