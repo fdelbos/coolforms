@@ -26,8 +26,8 @@ angular.module('CoolFormValidators').
         if validators[name]? then return validators[name]
         return null
 
-      add = (name, fn) ->
-        validators[name] = fn
+      add = (name, validator) ->
+        validators[name] = validator
       
       return {
         get: get
