@@ -13,8 +13,8 @@ angular.module('CoolFormServices').
     networkService,
     displayService) ->
 
-    return ()->
-      form = null
+    return (form)->
+            
       events = eventService()
       validation = validationService(events)
       values = {}
@@ -27,7 +27,6 @@ angular.module('CoolFormServices').
             line.fields.map (f) -> validation.initValidation(f, services)
           p += 1
 
-
       valueChange = (fieldName, value) ->
         values[fieldName] = value
         validation.removeError(fieldName)
@@ -37,10 +36,6 @@ angular.module('CoolFormServices').
         events.watchField(fieldName, eventHandlers)
         return (value) ->
           valueChange(fieldName, value)
-
-      registerController = (controllerScope, formObj) ->
-        form = formObj
-        setFields(form.pages)
 
       submit = ->
         if validation.validateAll(values) is false then return
@@ -54,7 +49,6 @@ angular.module('CoolFormServices').
 
       services =
         display: display
-        registerController: registerController
         registerField: registerField
         validateField: (fieldName) -> validation.validateField(fieldName, values)
         validateFields: (fieldList) -> validation.validateFields(fieldList, values)
@@ -62,5 +56,6 @@ angular.module('CoolFormServices').
         watchField: events.watchField
         submit: submit
 
+      setFields(form.pages)
       return services
   )
