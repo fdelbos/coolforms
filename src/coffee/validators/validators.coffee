@@ -21,6 +21,18 @@ angular.module('CoolFormValidators').
         min_size: minSizeValidator
         not_blank: notBlankValidator
         same_as: sameAsValidator
-      return validators
+
+      get = (name) ->
+        if validators[name]? then return validators[name]
+        return null
+
+      add = (name, fn) ->
+        validators[name] = fn
+      
+      return {
+        get: get
+        add: add
+      }
+        
   )
 
