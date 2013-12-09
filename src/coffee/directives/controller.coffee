@@ -24,8 +24,7 @@ angular.module('CoolForm').
       scope.$watch('form', (v) ->
         if v? and v.form?
           scope.definition = scope.form.form
-          scope.service = registrationService()
-          scope.service.registerController(scope, scope.definition)
+          scope.service = registrationService(scope.definition)
       )
 
     return {
