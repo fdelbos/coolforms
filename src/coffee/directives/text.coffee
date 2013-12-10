@@ -10,7 +10,11 @@ angular.module('CoolFormDirectives').
   directive('coolformText', ->
 
     l = (scope) ->
-      setValue = scope.service.registerField(scope.field.name)
+      handlers =
+        change: (nVal) ->
+          if scope.value != nVal then scope.value = nVal
+            
+      setValue = scope.service.registerField(scope.field.name, handlers)
       scope.value = if scope.field.value then value else ""
       scope.$watch('value', (v, o) -> setValue(v))
                     
