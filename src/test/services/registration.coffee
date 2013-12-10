@@ -49,6 +49,7 @@ describe 'registration tests', ->
       ]
   
   testFactoryInit = false
+  testGetServices = false
   angular.module('TestModule', []).factory('testFactory', ->
     validator = (name, values, rule) ->
       if values[name]? and values[name] == 'test' then return true
@@ -57,6 +58,8 @@ describe 'registration tests', ->
       validator: validator
       init: (name, rule, services) ->
         testFactoryInit = true
+        if services.watchField? then testGetServices = true
+        else dump services
     }
   )
 
@@ -81,7 +84,9 @@ describe 'registration tests', ->
       error: (msg) -> fieldError = true
       ok: () -> fieldError = false
 
+    # dependencie initialisation
     expect(testFactoryInit).toEqual true
+    expect(testGetServices).toEqual true
 
     # normal validation    
     service.watchField('field1', handlers)
