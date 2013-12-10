@@ -47,7 +47,6 @@ describe 'registration tests', ->
           ]
         ]
       ]
-
   
   testFactoryInit = false
   angular.module('TestModule', []).factory('testFactory', ->
@@ -82,8 +81,6 @@ describe 'registration tests', ->
       error: (msg) -> fieldError = true
       ok: () -> fieldError = false
 
-
-    
     expect(testFactoryInit).toEqual true
 
     # normal validation    
@@ -94,7 +91,6 @@ describe 'registration tests', ->
     expect(fieldValue).toEqual true
     changeValue(42)
     expect(fieldValue).toEqual 42
-
 
     expect(fieldError).toEqual false
     service.validateField('field1')
@@ -110,7 +106,6 @@ describe 'registration tests', ->
     expect(fieldError).toEqual true
     changeValue('fred@mail.com')
     
-
     # dependencie validation
     changeValue = service.registerField('field2', null)
     expect(service.validateField('field2')).toEqual false
@@ -125,6 +120,5 @@ describe 'registration tests', ->
     changeValue('test')
     service.submit()
     expect(formSend).toEqual true
-
 
   )
