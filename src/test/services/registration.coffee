@@ -63,20 +63,10 @@ describe 'registration tests', ->
     }
   )
 
-  formSend = false
-  angular.module('CoolFormServices').factory('networkService', ->
-    return ->
-      sendForm = (params, data) ->
-        formSend = true
-      return {
-        sendForm: sendForm
-      }
-    )
-
-  it 'should deal wtih a value', inject((registrationService) ->
+  it 'should test validation', inject((registrationService) ->
         
     service = registrationService(form)
-    changeValue = service.registerField('field1', null)
+    changeEmail = service.registerField('field1', null)
     fieldValue = false
     fieldError = false
     handlers =
@@ -92,38 +82,80 @@ describe 'registration tests', ->
     service.watchField('field1', handlers)
     
     expect(fieldValue).toEqual false
-    changeValue(true)
+    changeEmail(true)
     expect(fieldValue).toEqual true
-    changeValue(42)
+    changeEmail(42)
     expect(fieldValue).toEqual 42
 
     expect(fieldError).toEqual false
     service.validateField('field1')
     expect(fieldError).toEqual true
-    changeValue('fred@mail.com')
+    changeEmail('fred@mail.com')
     expect(fieldError).toEqual false
     service.validateField('field1')
     expect(fieldError).toEqual false
 
-    changeValue('wrong')
+    changeEmail('wrong')
     expect(fieldError).toEqual false
     service.validateAll()
     expect(fieldError).toEqual true
-    changeValue('fred@mail.com')
+    changeEmail('fred@mail.com')
     
     # dependencie validation
-    changeValue = service.registerField('field2', null)
+    changeTest = service.registerField('field2', null)
     expect(service.validateField('field2')).toEqual false
-    changeValue('test')
+    changeTest('test')
     expect(service.validateField('field2')).toEqual true
-    changeValue(false)
-        
-    # submit
+    changeTest(false)    
+  )
+
+  formSend = false
+  angular.module('CoolFormServices').factory('networkService', ->
+    return ->
+      sendForm = (params, data) ->
+        formSend = true
+      return {
+        sendForm: sendForm
+      }
+    )
+
+  it 'should test submit', inject((registrationService) ->
+    service = registrationService(form)
+    changeEmail = service.registerField('field1', null)
+    changeTest = service.registerField('field2', null)
+    
+    changeEmail("wrong")
+    changeTest("test")
     expect(formSend).toEqual false
     service.submit()
     expect(formSend).toEqual false
-    changeValue('test')
+    changeEmail("fred.delbos@gmail.com")
     service.submit()
     expect(formSend).toEqual true
+  )
 
+  it 'should test reset', inject((registrationService) ->
+    value1 = null
+    handler1 =
+      change: (v) -> value1 = v
+    value2 = null
+    handler2 =
+      change: (v) -> value2 = v
+    service = registrationService(form)
+    changeEmail = service.registerField('field1', null)
+    changeTest = service.registerField('field2', null)
+
+    expect(service.validateAll()).toEqual false
+    service.watchField('field1', handler1)
+    service.watchField('field2', handler2)
+    changeEmail("fred@gmail.com")
+    changeTest("test")
+    expect(service.validateAll()).toEqual true
+    service.reset()
+    expect(service.validateAll()).toEqual false
+    expect(value1).toEqual null
+    expect(value2).toEqual null
+    changeEmail("fred@gmail.com")
+    changeTest("test")
+    expect(service.validateAll()).toEqual true
   )
