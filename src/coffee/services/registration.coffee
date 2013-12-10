@@ -14,7 +14,6 @@ angular.module('CoolFormServices').
     displayService) ->
 
     return (form)->
-            
       events = eventService()
       validation = validationService(events)
       values = {}
@@ -27,7 +26,7 @@ angular.module('CoolFormServices').
             line.fields.map (f) -> validation.initValidation(f, services)
           p += 1
 
-      valueChange = (fieldName, value) ->
+      changeValue = (fieldName, value) ->
         values[fieldName] = value
         validation.removeError(fieldName)
         events.handle(fieldName, "change", value)
@@ -35,7 +34,7 @@ angular.module('CoolFormServices').
       registerField = (fieldName, eventHandlers) ->
         events.watchField(fieldName, eventHandlers)
         return (value) ->
-          valueChange(fieldName, value)
+          changeValue(fieldName, value)
 
       submit = ->
         if validation.validateAll(values) is false then return
@@ -51,10 +50,6 @@ angular.module('CoolFormServices').
         for d in deps
           f = angular.injector([d.module]).get(d.factory)          
           if d.type == "validator" then validation.add(d.name, f)
-            
-
-      if form.dependencies? then registerDependencies(form.dependencies)
-      setFields(form.pages)
 
       services =
         display: display
@@ -64,5 +59,7 @@ angular.module('CoolFormServices').
         validateAll: -> validation.validateAll(values)
         watchField: events.watchField
         submit: submit
+      if form.dependencies? then registerDependencies(form.dependencies)
+      setFields(form.pages)
       return services
   )
