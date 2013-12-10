@@ -23,7 +23,8 @@ angular.module('CoolFormServices').
         p = 0
         for page in pages
           for line in page.lines
-            line.fields.map (f) -> validation.initValidation(f, services)
+            for f in line.fields
+              validation.initValidation(f, services)
           p += 1
 
       changeValue = (fieldName, value) ->
@@ -58,8 +59,11 @@ angular.module('CoolFormServices').
         validateFields: (fieldList) -> validation.validateFields(fieldList, values)
         validateAll: -> validation.validateAll(values)
         watchField: events.watchField
+        reset: -> Object.keys(values).each (k) -> changeValue(k, null)
         submit: submit
+
       if form.dependencies? then registerDependencies(form.dependencies)
       setFields(form.pages)
+
       return services
   )
