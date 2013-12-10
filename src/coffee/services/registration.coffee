@@ -52,6 +52,10 @@ angular.module('CoolFormServices').
           f = angular.injector([d.module]).get(d.factory)          
           if d.type == "validator" then validation.add(d.name, f)
 
+      reset = ->
+        for k in Object.keys(values)
+          changeValue(k, null)
+
       services =
         display: display
         registerField: registerField
@@ -59,7 +63,7 @@ angular.module('CoolFormServices').
         validateFields: (fieldList) -> validation.validateFields(fieldList, values)
         validateAll: -> validation.validateAll(values)
         watchField: events.watchField
-        reset: -> Object.keys(values).each (k) -> changeValue(k, null)
+        reset: reset
         submit: submit
 
       if form.dependencies? then registerDependencies(form.dependencies)
