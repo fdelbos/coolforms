@@ -4,12 +4,8 @@
 	{{ field.label }}
   </label>
   
-  <div class="coolform-popover">
-	<ng-switch on=\"field.type\">
-	  <coolform-text ng-switch-when="text" field="field" service="service"></coolform-text>
-	</ng-switch>
-  </div>
-  
+  <coolform-dynamic field="field" service="service"></coolform-dynamic>
+    
   <p ng-show="error" class="help-block">{{ error }}</p>
   <p ng-hide="error" class="help-block" ng-if="field.help">{{ field.help }}</p>
     
