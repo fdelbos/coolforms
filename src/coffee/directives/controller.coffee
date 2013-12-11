@@ -14,6 +14,7 @@ angular.module('CoolForm').
       if scope.url?
         scope.definition = networkService().getJSON(scope.url).then((definition) ->
           scope.definition = definition.form
+          scope.service = registrationService(scope.definition)
         )
 
       else
@@ -21,11 +22,11 @@ angular.module('CoolForm').
           scope.definition = scope.form.form
           console.log scope.form
         
-      scope.$watch('form', (v) ->
-        if v? and v.form?
-          scope.definition = scope.form.form
-          scope.service = registrationService(scope.definition)
-      )
+        scope.$watch('form', (v) ->
+          if v? and v.form?
+            scope.definition = scope.form.form
+            scope.service = registrationService(scope.definition)
+        )
 
     return {
       restrict: 'E'
