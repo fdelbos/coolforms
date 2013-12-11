@@ -15,6 +15,7 @@ angular.module('CoolFormDirectives').
         """<#{name} field="field" service="service"></#{name}>"""
         
       type = scope.service.directives.get(scope.field.type)
+      
       el = $compile(mkTemplate(type))(scope)
       elem.append(el)
   
