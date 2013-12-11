@@ -1,12 +1,10 @@
 <div class="form-group" ng-show="show" ng-class="{'has-error': error}" >
 
-  <label class="control-label" for="email">
-	{{ field.label }}
-  </label>
+  <label class="control-label" for="email" ng-bind-html="field.label"></label>
   
   <coolform-dynamic field="field" service="service"></coolform-dynamic>
     
-  <p ng-show="error" class="help-block">{{ error }}</p>
-  <p ng-hide="error" class="help-block" ng-if="field.help">{{ field.help }}</p>
+  <p ng-show="error" class="help-block" ng-bind-html="error"></p>
+  <p ng-hide="error" class="help-block" ng-if="field.help" ng-bind-html="field.help"></p>
     
 </div>

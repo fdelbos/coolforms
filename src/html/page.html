@@ -1,6 +1,8 @@
 <div ng-if="page.title || page.description" class="row">
   <h4 ng-if="page.title" class="text-primary">{{ page.title }}</h4>
-  <div ng-if="page.description">{{ page.description }}</div>
+  <div ng-if="page.description">
+	<div ng-bind-html="page.description"></div>
+  </div>
 </div>
 
 <div class="row" ng-repeat="line in page.lines">

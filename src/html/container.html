@@ -4,7 +4,7 @@
 	<div ng-if="definition.title || definition.description" class="row">
 	  <h3 ng-if="definition.title">{{ definition.title }}</h3>
 	  <div ng-if="definition.description" class="well well-sm">
-		{{ definition.description }}
+		<div ng-bind-html="definition.description"></div>
 	  </div>
 	</div>
 
