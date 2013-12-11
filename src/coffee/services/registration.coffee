@@ -8,6 +8,7 @@
 
 angular.module('CoolFormServices').
   factory('registrationService', (
+    directivesService,
     validationService,
     eventService,
     networkService,
@@ -57,6 +58,7 @@ angular.module('CoolFormServices').
           changeValue(k, null)
 
       services =
+        directives: directivesService()
         display: display
         registerField: registerField
         validateField: (fieldName) -> validation.validateField(fieldName, values)
