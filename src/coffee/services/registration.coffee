@@ -50,8 +50,11 @@ angular.module('CoolFormServices').
 
       registerDependencies = (deps) ->
         for d in deps
-          f = angular.injector([d.module]).get(d.factory)          
-          if d.type == "validator" then validation.add(d.name, f)
+          switch d.type
+            when "validator" 
+              f = angular.injector([d.module]).get(d.factory)
+              validation.add(d.name, f)
+            when "directive" then services.directives.add(d.field_type, d.name)
 
       reset = ->
         for k in Object.keys(values)
