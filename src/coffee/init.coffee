@@ -8,5 +8,5 @@
 
 angular.module('CoolFormValidators', [])
 angular.module('CoolFormServices', ['CoolFormValidators'])
-angular.module('CoolFormDirectives', ['CoolFormServices'])
+angular.module('CoolFormDirectives', ['CoolFormServices', 'ngSanitize'])
 angular.module('CoolForm', ['CoolFormDirectives', 'CoolFormServices'])
