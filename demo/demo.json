@@ -1,0 +1,54 @@
+{"form":{
+	"name":"demo",
+	"action":"/some_url",
+	"method":"POST",
+	"submit":"Submit my CoolForm!",
+	"reset":"Reset...",
+	"pages":[
+		{"title":"User Informations",
+		 "description":"Section description lorem ipsum...",
+		 "lines":[
+			 {"fields": [
+				 {"name":"first_name",
+				  "type":"text",
+				  "label":"First Name",
+				  "help": "as written on your id card",
+				  "size":2},
+				 {"name":"last_name",
+				  "type":"text",
+				  "label":"Last Name",
+				  "size":2}]},
+			 {"fields": [
+				 {"name":"email",
+				  "type":"text",
+				  "placeholder":"ex: john.smith@mail.com",
+				  "label":"Email",
+				  "size":2,
+				  "validation":[
+					  {"validator":"email",
+					   "options":{
+						   "message": "Invalid email address"}}]},
+				 {"name":"password",
+				  "type":"text",
+				  "label": "Password",
+				  "help":"choose a strong password",
+				  "options":{
+					  "password": true},
+				  "validation": [
+					  {"validator": "min_size",
+					   "options":{
+						   "size": 6,
+						   "message": "Should be at least 6 characters long"}}]},
+				 {"name":"password_check",
+				  "type":"text",
+				  "label": "Re-Password",
+				  "help":"verifying password",
+				  "options": {
+					  "password": true},
+				  "validation":[
+					  {"validator":"same_as",
+					   "options":{
+						   "field":"password",
+						   "message":"Do not correspond to password"}}]}]}]}
+	]}
+}
