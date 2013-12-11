@@ -37,7 +37,8 @@ angular.module('CoolFormServices').
             vl = validators.get(rule.validator)
             if vl and vl.validator?
               if !vl.validator(fieldName, values, rule)
-                return setError(fieldName, rule.options.message)
+                if rule.options? then return setError(fieldName, rule.options.message)
+                else return setError(fieldName)
         return removeError(fieldName)
 
       validateFields = (fieldList, values) ->
