@@ -25,6 +25,6 @@ angular.module('CoolFormDirectives').
         service: '='
       template: ""
       link: l
-      }
-
+    }
+  
   )
