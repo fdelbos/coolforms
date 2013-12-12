@@ -50,11 +50,18 @@
 				  "type":"text",
 				  "placeholder":"ex: john.smith@mail.com",
 				  "label":"Email",
-				  "size":2,
+				  "size":1,
 				  "validation":[
 					  {"validator":"email",
 					   "options":{
 						   "message": "Invalid email address"}}]},
+				 {"name":"email2",
+				  "type":"text",
+				  "placeholder":"ex: john.smith@mail.com",
+				  "label":"Email validation without message",
+				  "size":1,
+				  "validation":[
+					  {"validator":"email"}]},
 				 {"name":"password",
 				  "type":"text",
 				  "label": "Password",
@@ -64,7 +71,7 @@
 				  "validation": [
 					  {"validator": "min_size",
 					   "options":{
-						   "size": 6,
+						   "size": 1,
 						   "message": "Should be at least 6 characters long"}}]},
 				 {"name":"password_check",
 				  "type":"text",
