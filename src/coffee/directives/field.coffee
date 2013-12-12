@@ -11,11 +11,14 @@ angular.module('CoolFormDirectives').
 
     l = (scope) ->
       scope.error = false
+      scope.errorMsg = false
       scope.show = true  
                   
       eventHandlers =
         ok: () -> scope.error = false
-        error: (e) -> scope.error = e    
+        error: (e) ->
+          scope.error = e
+          scope.errorMsg = if e == true then false else e    
       scope.service.watchField(scope.field.name, eventHandlers)
 
       if scope.field.show_when?
