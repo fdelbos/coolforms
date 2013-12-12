@@ -28,9 +28,8 @@ describe 'registration tests', ->
             label: "field 1"
             validation: [
               validator:"email"
-              options: [
+              options:
                 message: "not an email"
-                ]
               ]
             },
           {
@@ -38,10 +37,7 @@ describe 'registration tests', ->
             type: "text",
             label: "field 2",
             validation: [
-              validator:"testValidator",
-              options: [
-                message: "test validation failed"
-                ]
+              validator:"testValidator"
               ]
             }
           ]
