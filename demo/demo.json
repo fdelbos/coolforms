@@ -4,20 +4,47 @@
 	"method":"POST",
 	"submit":"Submit my CoolForm!",
 	"reset":"Reset...",
+	"dependencies": [
+		{"type":"validator",
+		 "module":"DemoModule",
+		 "factory": "demoFactory",
+		 "name": "demoValidator"},
+		{"type":"directive",
+		 "field_type":"demo_type",
+		 "name": "demo-directive"}
+	],
 	"pages":[
-		{"title":"User Informations",
-		 "description":"Section description lorem ipsum...",
+		{"title":"CoolForms Demo",
+		 "description":"A simple form demonstrating the CoolForm api. you can view the definition <a href=\"demo.json\">here</a> and the Coffeescript file <a href=\"app.coffee\">here</a>.",
 		 "lines":[
 			 {"fields": [
-				 {"name":"first_name",
+				 {"name":"show",
 				  "type":"text",
-				  "label":"First Name",
-				  "help": "as written on your id card",
-				  "size":2},
-				 {"name":"last_name",
+				  "label":"Show",
+				  "help": "write \"show\" to show an hidden field",
+				  "size":1},
+				 {"name":"hidden",
 				  "type":"text",
-				  "label":"Last Name",
-				  "size":2}]},
+				  "label":"Hidden Field",
+				  "show_when": [{"field":"show", "values":["show"]}],
+				  "size":1},
+				 {"name":"custom_validator",
+				  "type":"text",
+				  "label":"Custom Validator",
+				  "help":"write \"demo\" to validate",
+				  "size":1,
+				  "validation": [
+					  {"validator": "demoValidator",
+					   "options": {"message":"You have to write \"demo\" !"}}]},
+				 {"name":"demo_directive",
+				  "type":"demo_type",
+				  "label":"A dynamicaly loaded Input Type",
+				  "size":1,
+				 "validation":[
+					 {"validator":"not_blank",
+					  "options": {"message": "should not be blank!"}}
+				 ]}
+			 ]},
 			 {"fields": [
 				 {"name":"email",
 				  "type":"text",
