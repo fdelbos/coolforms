@@ -11,7 +11,7 @@ angular.module('CoolFormServices').
     
     return(events) ->
       
-      errors ={}
+      errors = {}
       fields = {}
 
       removeError = (fieldName) ->
@@ -20,9 +20,10 @@ angular.module('CoolFormServices').
         true
 
       setError = (fieldName, msg) ->
+        msg = if msg == null then true else msg
         errors[fieldName] = msg
         events.handle(fieldName, "error", msg)
-        false
+        return false
                   
       initValidation = (field, services) ->
         fields[field.name] = field
@@ -30,16 +31,21 @@ angular.module('CoolFormServices').
           vl = validators.get(rule.validator)
           if vl? and vl.init? then vl.init(field.name, rule, services)
 
+      validateForRule = (fieldName, rule, values) ->
+        msg = null
+        vl = validators.get(rule.validator)
+        if !vl or !vl.validator? then return true
+        if vl.validator(fieldName, values, rule) is false
+          if rule.options? and rule.options.message? then msg = rule.options.message
+          return setError(fieldName, msg)
+        return true
+
       validateField = (fieldName, values) ->
         field = fields[fieldName]
         if field.validation?
           for rule in field.validation
-            vl = validators.get(rule.validator)
-            if vl and vl.validator?
-              if !vl.validator(fieldName, values, rule)
-                if rule.options? then return setError(fieldName, rule.options.message)
-                else return setError(fieldName)
-        return removeError(fieldName)
+            if !validateForRule(fieldName, rule, values) then return false
+        removeError(fieldName)
 
       validateFields = (fieldList, values) ->
         result = true
