@@ -99,4 +99,10 @@ How to use
     * change your HTML to: `<body ng-app="app">`
 5. Add a coolform direcite somewhere. For example: `<coolform url="definition.json"></coolform>`
 
-Your setup is complete and you should see something like this
+Your setup is complete and you should see something like this:
+
+![intro_form1](https://raw.github.com/fdelbos/coolforms/master/ressources/intro_form1.png)
+
+If you click the submit button you will see that validation works:
+
+![intro_form2](https://raw.github.com/fdelbos/coolforms/master/ressources/intro_form2.png)
