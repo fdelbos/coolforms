@@ -3,8 +3,7 @@ coolforms
 
 Coolforms is a form generation library for Angularjs, enabling the develloper to dynamically genreate sophisticated forms. Forms are defined through a JSON definitions file, that could be fetched from a web service or provided as a Javascript object.
 
-Features
---------
+### Features
 
 * Form rendering from a definition JSON service or a Javascript object
 * Form validation with a set of built-in validators, as well as user defined validators
