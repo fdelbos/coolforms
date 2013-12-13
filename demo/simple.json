@@ -1,0 +1,62 @@
+{
+    "form": {
+        "name": "demo",
+        "action": "/some_url",
+        "method": "POST",
+        "submit": "Submit my CoolForm!",
+        "reset": "Reset Button",
+        "pages": [
+            {
+                "title": "CoolForms Example",
+                "description": "A simple form demonstrating an example CoolForm.",
+                "lines": [
+                    {
+                        "fields": [
+                            {
+                                "name": "first_name",
+                                "type": "text",
+                                "label": "First Name",
+                                "size": 1
+                            },
+                            {
+                                "name": "last_name",
+                                "type": "text",
+                                "label": "Last Name",
+                                "size": 1
+                            },
+                            {
+                                "name": "email",
+                                "type": "text",
+                                "label": "Email",
+                                "size": 1,
+                                "validation": [
+                                    {
+                                        "validator": "email",
+                                        "options": {
+                                            "message": "This is not a valid email!"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "password",
+                                "type": "text",
+                                "label": "Password",
+                                "size": 1,
+                                "help": "At least 6 characters",
+                                "validation": [
+                                    {
+                                        "validator": "not_blank",
+                                        "options": {
+                                            "message": "Too short!"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
