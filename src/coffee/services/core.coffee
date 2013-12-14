@@ -7,10 +7,11 @@
 ## 
 
 angular.module('CoolFormServices').
-  factory('coreService', (validators)->
+  factory('coreService', (validators, directivesService)->
 
     return(definition) ->
 
+      directives = directivesService()
       _fields = {}                  
 
       class Element
@@ -18,15 +19,13 @@ angular.module('CoolFormServices').
           @subElemName = subElemName
           @valid = true
 
-        reset: ->
-          e.reset() for e in this[@subElemName]
+        reset: -> e.reset() for e in this[@subElemName]
 
         validate: ->
           for e in this[@subElemName]
             if e.display is true and e.validate() is false
               @valid = false; return @valid              
           @valid = true; return @valid
-          
 
       class Displayable extends Element
         _doDisplay: (def, showOrHide) ->
@@ -54,7 +53,12 @@ angular.module('CoolFormServices').
           @submitLabel = def['submit']
           @resetLabel = def['reset']
           @pages = (new Page(p) for p in def['pages'])
+          if def['dependencies']? then switch d for d in def['dependencies']
+            when 'validator' then validators.add(d)
+            when 'field' then dump 'field'
 
+        submit: -> this.validate()
+        
 
       class Page extends Displayable
         constructor: (def) ->
@@ -76,29 +80,42 @@ angular.module('CoolFormServices').
           @name = def['name']
           @type = def['type']
           @label = def['label']
-          @size = def['size']
+          @size = if def['size']? then def['size']? else 1
           @help = def['help']
           @default = def['default']
+          @options = if def['options']? then def['options'] else {}
           @value = @default
-          @validators = (new Validator(v, @name) for v in def['validators'])
+          if def['validators']?
+            @validators = (new Validator(v, @name) for v in def['validators'])
+          else @validators = []
           @error = null
           @onChange = []
+          @onValidate = []
           _fields[@name] = this
 
-        set: (value) ->
-          @value = value
-          for h in @onChange
-            h(@value)
+        _doValidate: (res, msg) ->
+          (h(res) for h in @onValidate)
+          @valid = res
+          @error = msg
+          return res    
 
+        set: (value) ->
+          if value == @value then return
+          @value = value
+          (h(@value) for h in @onChange)
+          this._doValidate(true)
+          
         reset: ->
           this.set(if @default then @default else null)
+          this._doValidate(true)
 
         validate: ->
           for v in @validators
             if v.validate() is false
-              @valid = false; @error = v.message; return @valid    
-          @valid = true; @error = null; return @valid
+              return this._doValidate(false, v.message)
+          this._doValidate(true)
 
+        directive: -> directives.get(@type)
 
       class Validator
         constructor: (def, fieldName) ->
