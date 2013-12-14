@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormServices').
-  factory('directivesService', (validators) ->
+  factory('directivesService', ->
 
     return ->
 
