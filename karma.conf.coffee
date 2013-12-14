@@ -14,6 +14,7 @@ module.exports = (config) ->
     files: [
       'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js'
       'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-mocks.js',
+      'https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
       '../../coolforms.js',
       'services/*.coffee',
       'validators/*.coffee'
