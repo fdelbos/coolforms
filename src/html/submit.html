@@ -1,14 +1,19 @@
-<div class="well well-sm">
-  <button 
-	 ng-click="submit()" 
-	 type="button" 
-	 class="btn btn-primary">
-	{{ definition.submit }}
-  </button>
-  <button 
-	 ng-click="reset()"
-	 type="button" 
-	 class="btn btn-default">
-	{{ definition.reset }}
-  </button>
+<div class="row">
+  <div class="col-md-12">
+	<div class="well well-sm">
+	  <button 
+		 ng-click="form.validate()" 
+		 type="button" 
+		 class="btn btn-primary">
+		{{ form.submitLabel }}
+	  </button>
+	  <button 
+		 ng-if="form.resetLabel"
+		 ng-click="form.reset()"
+		 type="button" 
+		 class="btn btn-default">
+		{{ form.resetLabel }}
+	  </button>
+	</div>
+  </div>
 </div>
