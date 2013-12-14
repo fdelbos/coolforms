@@ -8,8 +8,8 @@
 
 angular.module('CoolFormValidators').
   factory('notBlankValidator', ->
-    validator = (name, values, rule) ->
-      v = values[name]
+    validator = (name, fields, options) ->
+      v = fields[name].value
       if v is undefined or v is null then return false
       if typeof v == "boolean" and v is true or v is false then return true
       if typeof v == "number" then return true
