@@ -7,32 +7,23 @@
 ## 
 
 angular.module('CoolForm').
-  directive('coolform', (networkService, registrationService) ->
+  directive('coolform', (networkService, coreService) ->
 
     l = (scope, elem, attr) ->
       
       if scope.url?
-        scope.definition = networkService().getJSON(scope.url).then((definition) ->
-          scope.definition = definition.form
-          scope.service = registrationService(scope.definition)
+        networkService().getJSON(scope.url).then((definition) ->
+          scope.form = coreService(definition)
         )
 
-      else
-        if scope.form?
-          scope.definition = scope.form.form
-          console.log scope.form
+      else if scope.definition?
+        scope.form = coreService(scope.definition)
         
-        scope.$watch('form', (v) ->
-          if v? and v.form?
-            scope.definition = scope.form.form
-            scope.service = registrationService(scope.definition)
-        )
-
     return {
       restrict: 'E'
       scope:
         url: '@?'
-        form: '=?'
+        definition: '=?'
       template: templates.controller
       link: l
       replace: true

@@ -14,8 +14,9 @@ angular.module('CoolFormDirectives').
 
       validatePage = (p) -> scope.service.validateFields(pageFields[p])
 
-      scope.moveTo = (index) ->
-        if validatePage(scope.current) is true then scope.current = index
+      scope.moveTo = (i) ->
+        if scope.form.pages[scope.current].validate() is true
+          scope.current = i
 
       scope.moveToNext = ->
         scope.moveTo(scope.current + 1)
@@ -24,37 +25,20 @@ angular.module('CoolFormDirectives').
         if scope.current == index then true else false
       
       scope.isLast = ->
-        if scope.current == scope.definition.pages.length - 1 then true else false
+        if scope.current + 1 >= scope.form.pages.length then return true
+        for i in [(scope.current + 1)..scope.form.pages.length - 1]
+          if scope.form.pages[i].display == true then return false
+        return true
+        
 
       scope.nextTitle = ->
-        if scope.current + 1 < scope.definition.pages.length
-          scope.definition.pages[scope.current + 1].title
-
-      scope.errorsOnPage = (p) -> !$.isEmptyObject scope.errors[p]
-
-      watch = (page, fieldName) ->
-        events =
-          ok: () -> delete scope.errors[page][fieldName]
-          error: (e) -> scope.errors[page][fieldName] = e 
-        scope.service.watchField(fieldName, events)
-          
-      scope.errors = []
-      pageFields = []
-      p = 0
-      for page in scope.definition.pages
-        scope.errors[p] = {}
-        pageFields[p] = []
-        for line in page.lines
-          for field in line.fields
-            pageFields[p].push(field.name)
-            watch(p, field.name)
-        p += 1
+        if scope.current + 1 < scope.form.pages.length
+          scope.form.pages[scope.current + 1].title
 
     return {
       restrict: 'E'
       scope:
-        definition: '='
-        service: '='
+        form: '='
       template: templates.wizard
       link: l
     }

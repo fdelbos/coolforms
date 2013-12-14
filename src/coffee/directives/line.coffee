@@ -10,15 +10,11 @@ angular.module('CoolFormDirectives').
   directive('coolformLine', () ->
 
     l = (scope, elem, attr) ->
-      
-      for f in scope.fields
-        if !f.size then f.size = 1
-  
+        
     return {
       restrict: 'E'
       scope:
-        fields: '='
-        service: '='
+        line: '='
       template: templates.line
       link: l
     }

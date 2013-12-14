@@ -14,7 +14,6 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         page: '='
-        service: '='
       template: templates.page
     }
   )

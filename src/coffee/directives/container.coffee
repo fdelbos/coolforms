@@ -10,19 +10,18 @@ angular.module('CoolFormDirectives').
   directive('coolformContainer', () ->
 
     l = (scope) ->
-      scope.$watch('definition', (v) ->
+      scope.$watch('form', (v) ->
         if !v.pages then return
         if v.pages.length > 1
           scope.wizard = true
         else
-          scope.page = scope.definition.pages[0]
+          scope.page = scope.form.pages[0]
       )
         
     return {
       restrict: 'E'
       scope:
-        definition: '='
-        service: '='
+        form: '='
       template: templates.container
       link: l
     }

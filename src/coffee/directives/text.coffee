@@ -14,21 +14,20 @@ angular.module('CoolFormDirectives').
         change: (nVal) ->
           if scope.value != nVal then scope.value = nVal
             
-      setValue = scope.service.registerField(scope.field.name, handlers)
-      scope.value = if scope.field.value then value else ""
-      scope.$watch('value', (v, o) -> setValue(v))
-                    
-      setType = (options) ->
-        scope.type = "text"
-        if options? and options.password? and options.password is true
-          scope.type = "password"  
-      setType(scope.field.options)
+      scope.value = scope.field.value
+      scope.field.onChange.push (v) ->
+        if v != scope.value then scope.value = v
+        
+      scope.$watch('value', (v, o) -> scope.field.set(v))
+
+      scope.type = "text"
+      if scope.field.options.type?
+        scope.type =  scope.field.options.type
 
     return {
       restrict: 'E'
       scope:
         field: '='
-        service: '='
       template: templates.text
       link: l
     }
