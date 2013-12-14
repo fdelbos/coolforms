@@ -26,9 +26,9 @@ angular.module('CoolFormValidators').
         if validators[name]? then return validators[name]
         return null
 
-      add = (name, validator) ->
-        validators[name] = validator
-      
+      add = (dep) ->
+        validators[dep.name] = angular.injector([dep.module]).get(dep.factory)
+        
       return {
         get: get
         add: add
