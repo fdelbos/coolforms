@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormServices').
-  factory('coreService', (validators, directivesService)->
+  factory('coreService', (validators, directivesService, networkService)->
 
     return(definition) ->
 
@@ -63,8 +63,19 @@ angular.module('CoolFormServices').
               when 'validator' then validators.add(d)
               when 'directive' then directives.add(d.name, d.tag)
 
-        submit: -> this.validate()
-        
+        submit: (success, error)->
+          if !this.validate() then return
+          params =
+            method: @method
+            action: @action
+            data: {}
+            success: success
+            error: error
+          console.log _fields
+          for k, v of _fields
+            if v.display == true then params.data[k] = v.value
+          console.log params
+          networkService().sendForm(params)
 
       class Page extends Displayable
         constructor: (def) ->

@@ -16,12 +16,12 @@ angular.module('CoolFormServices').
           deferred.resolve(data))
         return deferred.promise
 
-      sendForm = (params, data) ->
+      sendForm = (params) ->
         cfg =
           type: params.method
-          url: params.url
+          url: params.action
           contentType: 'application/x-www-form-urlencoded; charset=UTF-8'
-          data: data
+          data: params.data
           success: params.success
           error: params.error
           headers: params.headers
