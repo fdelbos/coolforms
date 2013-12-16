@@ -10,22 +10,36 @@ describe 'sameas tests', ->
 
   beforeEach(module('CoolFormValidators'))
 
-  rule =
-    options:
-      field: 't'
+  options:
+    field: 't'
+
+  fields =
+    f1:
+      value: 'fred'
+    f2:
+      value: ''
+    f3:
+      value: null
+    f4:
+      value: false
+    f5:
+      value: true
+    f6:
+      value: undefined
+    f8:
+      value: 42
+    f9:
+      value: 0
   
   it 'should work', inject((sameAsValidator) ->
-    expect(sameAsValidator.validator('f', {'f': 'fred', 't': 'fred'}, rule)).toEqual true
-    expect(sameAsValidator.validator('f', {'f': '', 't': ''}, rule)).toEqual true
-    expect(sameAsValidator.validator('f', {'f': null, 't': null}, rule)).toEqual true
-    expect(sameAsValidator.validator('f', {'f': false, 't': false}, rule)).toEqual true
-    expect(sameAsValidator.validator('f', {'f': 42, 't': 42}, rule)).toEqual true
-  )
-
-  it 'should not work', inject((sameAsValidator) ->
-    expect(sameAsValidator.validator('f', {'f': 'fred', 't': 'frey'}, rule)).toEqual false
-    expect(sameAsValidator.validator('f', {'f': ' ', 't': ''}, rule)).toEqual false
-    expect(sameAsValidator.validator('f', {'f': 'lol', 't': null}, rule)).toEqual false
-    expect(sameAsValidator.validator('f', {'f': true, 't': false}, rule)).toEqual false
-    expect(sameAsValidator.validator('f', {'f': 41, 't': 42}, rule)).toEqual false
+    expect(sameAsValidator.validator('f1', fields, {'field':'f1'})).toEqual true
+    expect(sameAsValidator.validator('f1', fields, {'field':'f2'})).toEqual false
+    expect(sameAsValidator.validator('f2', fields, {'field':'f1'})).toEqual false
+    expect(sameAsValidator.validator('f3', fields, {'field':'f3'})).toEqual true
+    expect(sameAsValidator.validator('f3', fields, {'field':'f8'})).toEqual false
+    expect(sameAsValidator.validator('f4', fields, {'field':'f4'})).toEqual true
+    expect(sameAsValidator.validator('f4', fields, {'field':'f5'})).toEqual false
+    expect(sameAsValidator.validator('f4', fields, {'field':'f6'})).toEqual false
+    expect(sameAsValidator.validator('f3', fields, {'field':'f6'})).toEqual false
+    expect(sameAsValidator.validator('f8', fields, {'field':'f9'})).toEqual false
   )

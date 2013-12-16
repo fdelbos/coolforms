@@ -10,19 +10,31 @@ describe 'exactsize tests', ->
 
   beforeEach(module('CoolFormValidators'))
 
-  rules =
-    options:
-      size: 4
+  options =
+    size: 4
 
-  it 'validate a correct string', inject((exactSizeValidator) ->
-    expect(exactSizeValidator.validator('f', {'f':'fred.delbos@gmail.com'}, rules)).toEqual false
-    expect(exactSizeValidator.validator('f', {'f':'1234'}, rules)).toEqual true
-    expect(exactSizeValidator.validator('f', {'f':'234'}, rules)).toEqual false
-    expect(exactSizeValidator.validator('f', {'f':'    '}, rules)).toEqual true
-  )
+  fields =
+    f1:
+      value: 'dasdafadatesfewtwf'
+    f2:
+      value: '1234'
+    f3:
+      value: '234'
+    f4:
+      value: '    '
+    f5:
+      value: null
+    f6:
+      value: 4242
+    f7:
+      value: false
 
-  it 'validate wrong stuffs', inject((exactSizeValidator) ->
-    expect(exactSizeValidator.validator('f', {'f':null}, rules)).toEqual false
-    expect(exactSizeValidator.validator('f', {}, rules)).toEqual false
-    expect(exactSizeValidator.validator('f', {'f': false}, rules)).toEqual false
+  it 'validate ', inject((exactSizeValidator) ->
+    expect(exactSizeValidator.validator('f1', fields, options)).toEqual false
+    expect(exactSizeValidator.validator('f2', fields, options)).toEqual true
+    expect(exactSizeValidator.validator('f3', fields, options)).toEqual false
+    expect(exactSizeValidator.validator('f4', fields, options)).toEqual true
+    expect(exactSizeValidator.validator('f5', fields, options)).toEqual false
+    expect(exactSizeValidator.validator('f6', fields, options)).toEqual false
+    expect(exactSizeValidator.validator('f7', fields, options)).toEqual false
   )

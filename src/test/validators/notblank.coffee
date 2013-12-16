@@ -10,32 +10,40 @@ describe 'notblank tests', ->
 
   beforeEach(module('CoolFormValidators'))
 
+  fields =
+    f1:
+      value: 'fred'
+    f2:
+      value: '   \t\na\t '
+    f3:
+      value: ''
+    f4:
+      value: '    '
+    f5:
+      value: '    \t\n\n \n\n \t\t\n  '
+    f6:
+      value: 0
+    f7:
+      value: 42
+    f8:
+      value: true
+    f9:
+      value: false
+    f10:
+      value: null
+    f11:
+      value: undefined
+
   it 'for a string', inject((notBlankValidator) ->
-    expect(notBlankValidator.validator('f', {'f': 'fred'}, null)).toEqual true
-    expect(notBlankValidator.validator('f', {'f': '   \t\na\t '}, null)).toEqual true
-  )
-
-  it 'with blank field' , inject((notBlankValidator) ->
-    expect(notBlankValidator.validator('f', {'f': ''}, null)).toEqual false
-  )
-
-  it 'blank field with whitespaces' , inject((notBlankValidator) ->
-    expect(notBlankValidator.validator('f', {'f': '   '}, null)).toEqual false
-    expect(notBlankValidator.validator('f', {'f': '   \t\n\t '}, null)).toEqual false
-  )
-
-  it 'with numbers' , inject((notBlankValidator) ->
-    expect(notBlankValidator.validator('f', {'f': 0}, null)).toEqual true
-    expect(notBlankValidator.validator('f', {'f': 42}, null)).toEqual true
-  )
-
-  it 'with booleans' , inject((notBlankValidator) ->
-    expect(notBlankValidator.validator('f', {'f': true}, null)).toEqual true
-    expect(notBlankValidator.validator('f', {'f': false}, null)).toEqual true
-  )
-
-  it 'with null stuffs' , inject((notBlankValidator) ->
-    expect(notBlankValidator.validator('f', {}, null)).toEqual false
-    expect(notBlankValidator.validator('f', {'f': null}, null)).toEqual false
-    expect(notBlankValidator.validator('f', {'f': undefined}, null)).toEqual false
+    expect(notBlankValidator.validator('f1', fields)).toEqual true
+    expect(notBlankValidator.validator('f2', fields)).toEqual true
+    expect(notBlankValidator.validator('f3', fields)).toEqual false
+    expect(notBlankValidator.validator('f4', fields)).toEqual false
+    expect(notBlankValidator.validator('f5', fields)).toEqual false
+    expect(notBlankValidator.validator('f6', fields)).toEqual true
+    expect(notBlankValidator.validator('f7', fields)).toEqual true
+    expect(notBlankValidator.validator('f8', fields)).toEqual true
+    expect(notBlankValidator.validator('f9', fields)).toEqual true
+    expect(notBlankValidator.validator('f10', fields)).toEqual false
+    expect(notBlankValidator.validator('f11', fields)).toEqual false
   )
