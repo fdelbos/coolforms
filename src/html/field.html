@@ -2,19 +2,15 @@
 	 ng-show="field.display" 
 	 ng-class="{'has-error': !field.valid}" >
 
-  <label class="control-label" 
-		 for="{{ field.name }}" 
-		 ng-bind-html="field.label"></label>
-  
-  <coolform-dynamic field="field"></coolform-dynamic>
-    
-  <p ng-hide="field.valid" 
-	 class="help-block" 
-	 ng-bind-html="field.error"></p>
+  <label class="control-label" for="{{ field.name }}">
+	{{ field.name }}
+	<span ng-if="field.mandatory">*</span>
+  </label>
 
-  <p ng-show="field.valid" 
-	 class="help-block" 
-	 ng-if="field.help" 
-	 ng-bind-html="field.help"></p>
+  <div>
+	<coolform-dynamic field="field"></coolform-dynamic>
+  </div>
+
+  <p class="help-block" ng-bind-html="lbl"></p>
     
 </div>
