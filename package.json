@@ -24,6 +24,7 @@
 		"grunt-contrib-coffee": "latest",
 		"grunt-contrib-connect": "latest",
 		"grunt-karma": "latest",
+		"html-minifier": "latest",
 		"jade": "latest",
 		"marked": "latest"
   }

@@ -11,6 +11,8 @@ path = require('path')
 glob = require("glob")
 jade = require('jade')
 marked = require("marked")
+htmlmin = require("html-minifier")
+
 
 module.exports = (grunt) ->
 
@@ -20,8 +22,8 @@ module.exports = (grunt) ->
     "src/coffee/validators/*.coffee",
     "src/coffee/services/*.coffee"]
   html_sources =  "src/html/*.html"
-  templates_source = "src/coffee/templates.coffee"
-  sources = coffee_sources.concat [templates_source]
+  templates_cache = "src/coffee/templates_cache.coffee"
+  sources = coffee_sources.concat [templates_cache]
 
   config =
     pkg: grunt.file.readJSON('package.json')
@@ -29,6 +31,7 @@ module.exports = (grunt) ->
     uglify:
       options:
         banner: '/*! <%= pkg.name %> <%= pkg.version %> */\n'
+        mangle: false
       build:
         src: '<%= pkg.name %>.js'
         dest: '<%= pkg.name %>.min.js'
@@ -67,10 +70,16 @@ module.exports = (grunt) ->
 
   grunt.registerTask(
     'templates',
-    'Generate a coffeescript files containing the html templates.', ->
-      tmpl = glob.sync(html_sources).map (f) -> "  #{path.basename(f, '.html')}: \"\"\"#{fs.readFileSync(f)}\"\"\"\n"
-      fs.writeFileSync(templates_source, "templates =\n" + tmpl.join('\n'))
-      grunt.log.writeln("File #{templates_source} created.")
+    'Generate a coffeescript files containing the html templates.', ->  
+      tmpl = glob.sync(html_sources).map (f) ->
+        minopt =
+          removeComments: true
+          collapseWhitespace: true
+        content = htmlmin.minify("#{fs.readFileSync(f)}", minopt)
+        "  $templateCache.put(\"coolForm.#{path.basename(f, '.html')}\", \"\"\"#{content}\"\"\")\n"
+      content = "angular.module('CoolFormDirectives').run ($templateCache) ->\n" + tmpl.join('\n')
+      fs.writeFileSync(templates_cache, content)
+      grunt.log.writeln("File #{templates_cache} created.")
   )
 
   grunt.registerTask(
