@@ -8,12 +8,12 @@
 
 
 angular.module('CoolFormDirectives').
-  directive('coolformPage', ->
+  directive('coolformPage', ($templateCache) ->
           
     return {
       restrict: 'E'
       scope:
         page: '='
-      template: templates.page
+      template: $templateCache.get('coolForm.page')
     }
   )

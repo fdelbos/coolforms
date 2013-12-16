@@ -7,7 +7,7 @@
 ##
 
 angular.module('CoolFormDirectives').
-  directive('coolformField', ->
+  directive('coolformField', ($templateCache) ->
 
     l = (scope) ->
       scope.lbl = scope.field.label
@@ -24,7 +24,7 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         field: '='
-      template: templates.field
+      template: $templateCache.get('coolForm.field')
       link: l
     }
 

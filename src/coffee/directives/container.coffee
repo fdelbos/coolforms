@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformContainer', () ->
+  directive('coolformContainer', ($templateCache) ->
 
     l = (scope) ->
       scope.$watch('form', (v) ->
@@ -22,7 +22,7 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         form: '='
-      template: templates.container
+      template: $templateCache.get('coolForm.container')
       link: l
     }
   )

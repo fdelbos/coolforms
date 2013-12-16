@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolForm').
-  directive('coolform', (networkService, coreService) ->
+  directive('coolform', ($templateCache, networkService, coreService) ->
 
     l = (scope, elem, attr) ->
       
@@ -24,7 +24,7 @@ angular.module('CoolForm').
       scope:
         url: '@?'
         definition: '=?'
-      template: templates.controller
+      template: $templateCache.get('coolForm.controller')
       link: l
       replace: true
     }

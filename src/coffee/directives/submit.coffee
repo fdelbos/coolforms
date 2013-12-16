@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformSubmit', (networkService)->
+  directive('coolformSubmit', ($templateCache, networkService)->
 
     l = (scope) ->
       # scope.submit = -> scope.form.submit()
@@ -17,7 +17,7 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         form: '='
-      template: templates.submit
+      template: $templateCache.get('coolForm.submit')
       link: l
     }
   )

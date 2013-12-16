@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformLine', () ->
+  directive('coolformLine', ($templateCache) ->
 
     l = (scope, elem, attr) ->
         
@@ -15,7 +15,7 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         line: '='
-      template: templates.line
+      template: $templateCache.get('coolForm.line')
       link: l
     }
   )
