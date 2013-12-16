@@ -1,6 +1,7 @@
 coolforms.coffee
 
 /src/coffee/templates.coffee
+/src/coffee/templates_cach.coffee
 
 /npm-debug.log
 
