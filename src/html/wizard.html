@@ -5,7 +5,7 @@
 		  ng-show="page.display"
 		  ng-class="{active: isCurrent($index)}">
 		<a ng-click="moveTo($index)"
-		   ng-class="{'text-danger': errorsOnPage($index)}"
+		   ng-class="{'text-danger': !form.pages[$index].isValid()}"
 		   href="">
 		  {{ page.title }}
 		</a>
@@ -24,10 +24,11 @@
 	  <button ng-click="moveToNext()" 
 			  type="button"
 			  class="btn btn-primary"
-			  ng-class="{disabled: errorsOnPage(current)}">
+			  ng-class="{'btn-danger': !form.pages[current].isValid()}">
 		<span class="glyphicon glyphicon-arrow-right"></span>
 		{{ nextTitle() }}
 	  </button>
+	  
 	</div>
   </div>
 </div>
