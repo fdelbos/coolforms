@@ -15,6 +15,7 @@ angular.module('CoolFormDirectives').
       validatePage = (p) -> scope.service.validateFields(pageFields[p])
 
       scope.moveTo = (i) ->
+        if i < scope.current then scope.current = i
         if scope.form.pages[scope.current].validate() is true
           scope.current = i
 
