@@ -17,15 +17,20 @@ angular.module('CoolFormServices').
       class Element
         constructor: (subElemName) ->
           @subElemName = subElemName
-          @valid = true
+
+        isValid: ->
+          for e in this[@subElemName]
+            if e.isValid() is false then return false
+          return true
 
         reset: -> e.reset() for e in this[@subElemName]
 
         validate: ->
+          valid = true
           for e in this[@subElemName]
             if e.display is true and e.validate() is false
-              @valid = false; return @valid              
-          @valid = true; return @valid
+              valid = false
+          return valid
 
       class Displayable extends Element
         _doDisplay: (def, showOrHide) ->
@@ -53,9 +58,10 @@ angular.module('CoolFormServices').
           @submitLabel = def['submit']
           @resetLabel = def['reset']
           @pages = (new Page(p) for p in def['pages'])
-          if def['dependencies']? then switch d for d in def['dependencies']
-            when 'validator' then validators.add(d)
-            when 'field' then dump 'field'
+          if def['dependencies']? then for d in def['dependencies']
+            switch d.type
+              when 'validator' then validators.add(d)
+              when 'directive' then directives.add(d.name, d.tag)
 
         submit: -> this.validate()
         
@@ -88,10 +94,19 @@ angular.module('CoolFormServices').
           if def['validators']?
             @validators = (new Validator(v, @name) for v in def['validators'])
           else @validators = []
+          @mandatory = this._isMandatory(def)
           @error = null
+          @valid = true
           @onChange = []
           @onValidate = []
           _fields[@name] = this
+
+        _isMandatory: (def) ->
+          if !def['mandatory']? or !def['mandatory'] then return false
+          @mandatory = true
+          @validators.push new Validator({'name':'not_null'}, @name)
+
+        isValid: -> @valid
 
         _doValidate: (res, msg) ->
           (h(res) for h in @onValidate)
