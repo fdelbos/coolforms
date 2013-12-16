@@ -2,7 +2,7 @@ coolforms.coffee
 
 /src/coffee/templates.coffee
 /src/coffee/templates_cache.coffee
-
+/doc/
 /npm-debug.log
 
 /node_modules/
