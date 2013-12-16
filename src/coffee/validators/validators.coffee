@@ -13,6 +13,7 @@ angular.module('CoolFormValidators').
     maxSizeValidator,
     minSizeValidator,
     notBlankValidator,
+    notNullValidator,
     sameAsValidator)->
       validators =
         email:  emailValidator
@@ -20,6 +21,7 @@ angular.module('CoolFormValidators').
         max_size: maxSizeValidator
         min_size: minSizeValidator
         not_blank: notBlankValidator
+        not_null: notNullValidator
         same_as: sameAsValidator
 
       get = (name) ->
