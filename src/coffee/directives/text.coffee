@@ -10,10 +10,6 @@ angular.module('CoolFormDirectives').
   directive('coolformText', ->
 
     l = (scope) ->
-      handlers =
-        change: (nVal) ->
-          if scope.value != nVal then scope.value = nVal
-            
       scope.value = scope.field.value
       scope.field.onChange.push (v) ->
         if v != scope.value then scope.value = v
