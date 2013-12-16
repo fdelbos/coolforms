@@ -57,6 +57,8 @@ angular.module('CoolFormServices').
           @method = if !def['method']? then "POST" else def['method']
           @submitLabel = def['submit']
           @resetLabel = def['reset']
+          @headers = def['headers']
+          @hiddens = def['hiddens']
           @pages = (new Page(p) for p in def['pages'])
           if def['dependencies']? then for d in def['dependencies']
             switch d.type
@@ -71,10 +73,10 @@ angular.module('CoolFormServices').
             data: {}
             success: success
             error: error
-          console.log _fields
+          if @headers? then params['headers'] = @headers
+          if @hiddens? then (params.data[k] = v for k, v of @hiddens)
           for k, v of _fields
             if v.display == true then params.data[k] = v.value
-          console.log params
           networkService().sendForm(params)
 
       class Page extends Displayable
