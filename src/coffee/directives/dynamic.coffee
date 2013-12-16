@@ -21,7 +21,6 @@ angular.module('CoolFormDirectives').
       restrict: 'E'
       scope:
         field: '='
-      template: ""
       link: l
     }
   
