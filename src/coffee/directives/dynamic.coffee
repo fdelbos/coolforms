@@ -7,23 +7,20 @@
 ## 
 
 angular.module('CoolFormDirectives').
-  directive('coolformDynamic', ($compile) ->
+  directive('coolformDynamic', ($compile, directivesService) ->
 
     l = (scope, elem) ->
 
       mkTemplate = (name) ->
-        """<#{name} field="field" service="service"></#{name}>"""
-        
-      type = scope.service.directives.get(scope.field.type)
-      
-      el = $compile(mkTemplate(type))(scope)
+        """<#{name} field="field"></#{name}>"""
+
+      el = $compile(mkTemplate(scope.field.directive()))(scope)
       elem.append(el)
   
     return {
       restrict: 'E'
       scope:
         field: '='
-        service: '='
       template: ""
       link: l
     }

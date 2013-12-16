@@ -1,29 +1,36 @@
 <div class="row">
-  <ul class="nav nav-tabs">
-	<li ng-repeat="page in definition.pages" ng-class="{active: isCurrent($index)}">
-	  <a ng-click="moveTo($index)"
-		 ng-class="{'text-danger': errorsOnPage($index)}"
-		 href="">
-		{{ page.title }}
-	  </a>
-	<li>
-  </ul>
+  <div class="col-md-12">
+	<ul class="nav nav-tabs">
+	  <li ng-repeat="page in form.pages"
+		  ng-show="page.display"
+		  ng-class="{active: isCurrent($index)}">
+		<a ng-click="moveTo($index)"
+		   ng-class="{'text-danger': !form.pages[$index].isValid()}"
+		   href="">
+		  {{ page.title }}
+		</a>
+	  <li>
+	</ul>
+  </div>
 </div>
 
-<div ng-repeat="page in definition.pages">
-  <coolform-page ng-show="isCurrent($index)" page="page" service="service">
-  </coolform-page>
+<div ng-repeat="page in form.pages">
+  <coolform-page ng-show="isCurrent($index)" page="page"></coolform-page>
 </div>
 
-<div ng-hide="isLast()" class="well well-sm">
-  <button ng-click="moveToNext()" 
-		  type="button"
-		  class="btn btn-primary"
-		  ng-class="{disabled: errorsOnPage(current)}">
-	<span class="glyphicon glyphicon-arrow-right"></span>
-	{{ nextTitle() }}
-  </button>
+<div ng-hide="isLast()" class="row">
+  <div class="col-md-12">
+	<div  class="well well-sm">
+	  <button ng-click="moveToNext()" 
+			  type="button"
+			  class="btn btn-primary"
+			  ng-class="{'btn-danger': !form.pages[current].isValid()}">
+		<span class="glyphicon glyphicon-arrow-right"></span>
+		{{ nextTitle() }}
+	  </button>
+	  
+	</div>
+  </div>
 </div>
 
-<coolform-submit ng-show="isLast()" service="service" definition="definition">
-</coolform-submit>
+<coolform-submit ng-show="isLast()" form="form"></coolform-submit>

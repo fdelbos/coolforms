@@ -1,8 +1,7 @@
-<div ng-repeat="field in fields">
-  <div class="col-md-{{ field.size * 3 }}" >
-	<coolform-field 
-	   field="field" 
-	   service="service">
-	</coolform-field>
+<div class="row" ng-show="line.display">
+  <div ng-repeat="field in line.fields">
+	<div class="col-md-{{ field.size * 3 }}" >
+	  <coolform-field field="field"></coolform-field>
+	</div>
   </div>
 </div>

@@ -10,14 +10,13 @@ angular.module('CoolFormDirectives').
   directive('coolformSubmit', (networkService)->
 
     l = (scope) ->
-      scope.submit = -> scope.service.submit()
-      scope.reset = -> scope.service.reset()
+      # scope.submit = -> scope.form.submit()
+      # scope.reset = -> scope.form.reset()
 
     return {
       restrict: 'E'
       scope:
-        definition: '='
-        service: '='
+        form: '='
       template: templates.submit
       link: l
     }

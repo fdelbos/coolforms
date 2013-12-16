@@ -10,27 +10,20 @@ angular.module('CoolFormDirectives').
   directive('coolformField', ->
 
     l = (scope) ->
-      scope.error = false
-      scope.errorMsg = false
-      scope.show = true  
-                  
-      eventHandlers =
-        ok: () -> scope.error = false
-        error: (e) ->
-          scope.error = e
-          scope.errorMsg = if e == true then false else e    
-      scope.service.watchField(scope.field.name, eventHandlers)
-
-      if scope.field.show_when?
-        scope.service.display.showWhen(scope.field.show_when,
-          (r) -> scope.show = r
-        )
-      
+      scope.lbl = scope.field.label
+      scope.$watch('field.valid', (v) ->
+        switch v
+          when true then scope.lbl = scope.field.label
+          when false
+            if !scope.field.error or scope.field.error == ""
+              scope.lbl = scope.field.label
+            else scope.lbl = scope.field.error
+      )
+                        
     return {
       restrict: 'E'
       scope:
         field: '='
-        service: '='
       template: templates.field
       link: l
     }

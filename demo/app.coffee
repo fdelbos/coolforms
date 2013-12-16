@@ -9,8 +9,8 @@
 angular.module('app', ['CoolForm', 'AnotherDemoModule'])
 
 angular.module('DemoModule', []).factory('demoFactory', ->
-  validator = (name, values, rule) ->
-    if values[name]? and values[name] == 'demo' then return true
+  validator = (name, fields, options) ->
+    if fields[name].value? and fields[name].value == 'demo' then return true
     return false
 
   return {
@@ -22,13 +22,11 @@ angular.module('DemoModule', []).factory('demoFactory', ->
 angular.module('AnotherDemoModule', []).directive('demoDirective', ->
 
   l = (scope) ->
-    handlers =
-      change: (nVal) ->
-        if scope.value != nVal then scope.value = nVal
-    setValue = scope.service.registerField(scope.field.name, handlers)
-    scope.value = if scope.field.value then value else ""
-    scope.$watch('value', (v, o) -> setValue(v))
-            
+    scope.value = scope.field.value
+    scope.field.onChange.push (v) ->
+      if v != scope.value then scope.value = v
+    scope.$watch('value', (v, o) -> scope.field.set(v))
+  
   return {
     restrict: 'E'
     scope:

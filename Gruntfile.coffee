@@ -9,6 +9,8 @@
 fs = require('fs')
 path = require('path')
 glob = require("glob")
+jade = require('jade')
+marked = require("marked")
 
 module.exports = (grunt) ->
 
@@ -69,7 +71,20 @@ module.exports = (grunt) ->
       tmpl = glob.sync(html_sources).map (f) -> "  #{path.basename(f, '.html')}: \"\"\"#{fs.readFileSync(f)}\"\"\"\n"
       fs.writeFileSync(templates_source, "templates =\n" + tmpl.join('\n'))
       grunt.log.writeln("File #{templates_source} created.")
-    )
+  )
+
+  grunt.registerTask(
+    'doc', 'Generate documentation', ->
+      fs.mkdir('doc')
+      tmpl = jade.compile(fs.readFileSync('site/template.jade'), {'pretty':true})
+      mds = glob.sync('site/*.md')
+      mds.map (f) ->
+        data =
+          content: marked(fs.readFileSync(f, 'utf8'))
+          name: path.basename(f, '.md')
+        fs.writeFileSync("doc/#{data.name}.html", tmpl(data))
+  )
+
 
   grunt.registerTask('all', [
     'templates',

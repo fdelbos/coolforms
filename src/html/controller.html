@@ -1,10 +1,10 @@
 <div>
-  <div ng-if="!definition">
+  <div ng-if="!form">
   	loading {{ url }}
   </div>
 
-  <div ng-if="definition">
-	<coolform-container definition="definition" service="service">
+  <div ng-if="form">
+	<coolform-container form="form">
 	</coolform-container>
   </div>
 </div>

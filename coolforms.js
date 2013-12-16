@@ -1,64 +1,56 @@
 (function() {
-  var templates;
+  var templates,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   angular.module('CoolFormValidators', []);
 
   angular.module('CoolFormServices', ['CoolFormValidators']);
 
-  angular.module('CoolFormDirectives', ['CoolFormServices']);
+  angular.module('CoolFormDirectives', ['CoolFormServices', 'ngSanitize']);
 
   angular.module('CoolForm', ['CoolFormDirectives', 'CoolFormServices']);
 
   angular.module('CoolFormDirectives').directive('coolformContainer', function() {
     var l;
     l = function(scope) {
-      return scope.$watch('definition', function(v) {
+      return scope.$watch('form', function(v) {
         if (!v.pages) {
           return;
         }
         if (v.pages.length > 1) {
           return scope.wizard = true;
         } else {
-          return scope.page = scope.definition.pages[0];
+          return scope.page = scope.form.pages[0];
         }
       });
     };
     return {
       restrict: 'E',
       scope: {
-        definition: '=',
-        service: '='
+        form: '='
       },
       template: templates.container,
       link: l
     };
   });
 
-  angular.module('CoolForm').directive('coolform', function(networkService, registrationService) {
+  angular.module('CoolForm').directive('coolform', function(networkService, coreService) {
     var l;
     l = function(scope, elem, attr) {
       if (scope.url != null) {
-        scope.definition = networkService().getJSON(scope.url).then(function(definition) {
-          return scope.definition = definition.form;
+        return networkService().getJSON(scope.url).then(function(definition) {
+          return scope.form = coreService(definition);
         });
-      } else {
-        if (scope.form != null) {
-          scope.definition = scope.form.form;
-          console.log(scope.form);
-        }
+      } else if (scope.definition != null) {
+        return scope.form = coreService(scope.definition);
       }
-      return scope.$watch('form', function(v) {
-        if ((v != null) && (v.form != null)) {
-          scope.definition = scope.form.form;
-          return scope.service = registrationService(scope.definition);
-        }
-      });
     };
     return {
       restrict: 'E',
       scope: {
         url: '@?',
-        form: '=?'
+        definition: '=?'
       },
       template: templates.controller,
       link: l,
@@ -66,69 +58,60 @@
     };
   });
 
-  angular.module('CoolFormDirectives').directive('coolformField', function() {
+  angular.module('CoolFormDirectives').directive('coolformDynamic', function($compile, directivesService) {
     var l;
-    l = function(scope) {
-      var eventHandlers;
-      scope.error = false;
-      scope.show = true;
-      eventHandlers = {
-        ok: function() {
-          return scope.error = false;
-        },
-        error: function(e) {
-          return scope.error = e;
-        }
+    l = function(scope, elem) {
+      var el, mkTemplate;
+      mkTemplate = function(name) {
+        return "<" + name + " field=\"field\"></" + name + ">";
       };
-      scope.service.watchField(scope.field.name, eventHandlers);
-      if (scope.field.show_when != null) {
-        return scope.service.display.showWhen(scope.field.show_when, function(r) {
-          return scope.show = r;
-        });
-      }
+      el = $compile(mkTemplate(scope.field.directive()))(scope);
+      return elem.append(el);
     };
     return {
       restrict: 'E',
       scope: {
-        field: '=',
-        service: '='
+        field: '='
+      },
+      template: "",
+      link: l
+    };
+  });
+
+  angular.module('CoolFormDirectives').directive('coolformField', function() {
+    var l;
+    l = function(scope) {
+      scope.lbl = scope.field.label;
+      return scope.$watch('field.valid', function(v) {
+        switch (v) {
+          case true:
+            return scope.lbl = scope.field.label;
+          case false:
+            if (!scope.field.error || scope.field.error === "") {
+              return scope.lbl = scope.field.label;
+            } else {
+              return scope.lbl = scope.field.error;
+            }
+        }
+      });
+    };
+    return {
+      restrict: 'E',
+      scope: {
+        field: '='
       },
       template: templates.field,
       link: l
     };
   });
 
-  angular.module('CoolFormDirectives').directive('coolformHeader', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        header: '='
-      },
-      template: templates.header
-    };
-  });
-
   angular.module('CoolFormDirectives').directive('coolformLine', function() {
     var l;
-    l = function(scope, elem, attr) {
-      var f, _i, _len, _ref, _results;
-      _ref = scope.fields;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        f = _ref[_i];
-        if (!f.size) {
-          _results.push(f.size = 1);
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    };
+    l = function(scope, elem, attr) {};
     return {
       restrict: 'E',
       scope: {
-        fields: '=',
-        service: '='
+        line: '='
       },
       template: templates.line,
       link: l
@@ -139,8 +122,7 @@
     return {
       restrict: 'E',
       scope: {
-        page: '=',
-        service: '='
+        page: '='
       },
       template: templates.page
     };
@@ -148,19 +130,11 @@
 
   angular.module('CoolFormDirectives').directive('coolformSubmit', function(networkService) {
     var l;
-    l = function(scope) {
-      scope.submit = function() {
-        return scope.service.submit();
-      };
-      return scope.reset = function() {
-        return scope.service.reset();
-      };
-    };
+    l = function(scope) {};
     return {
       restrict: 'E',
       scope: {
-        definition: '=',
-        service: '='
+        form: '='
       },
       template: templates.submit,
       link: l
@@ -170,32 +144,24 @@
   angular.module('CoolFormDirectives').directive('coolformText', function() {
     var l;
     l = function(scope) {
-      var handlers, setType, setValue;
-      handlers = {
-        change: function(nVal) {
-          if (scope.value !== nVal) {
-            return scope.value = nVal;
-          }
+      scope.value = scope.field.value;
+      scope.field.onChange.push(function(v) {
+        if (v !== scope.value) {
+          return scope.value = v;
         }
-      };
-      setValue = scope.service.registerField(scope.field.name, handlers);
-      scope.value = scope.field.value ? value : "";
-      scope.$watch('value', function(v, o) {
-        return setValue(v);
       });
-      setType = function(options) {
-        scope.type = "text";
-        if ((options != null) && (options.password != null) && options.password === true) {
-          return scope.type = "password";
-        }
-      };
-      return setType(scope.field.options);
+      scope.$watch('value', function(v, o) {
+        return scope.field.set(v);
+      });
+      scope.type = "text";
+      if (scope.field.options.type != null) {
+        return scope.type = scope.field.options.type;
+      }
     };
     return {
       restrict: 'E',
       scope: {
-        field: '=',
-        service: '='
+        field: '='
       },
       template: templates.text,
       link: l
@@ -205,14 +171,17 @@
   angular.module('CoolFormDirectives').directive('coolformWizard', function() {
     var l;
     l = function(scope) {
-      var field, line, p, page, pageFields, validatePage, watch, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+      var validatePage;
       scope.current = 0;
       validatePage = function(p) {
         return scope.service.validateFields(pageFields[p]);
       };
-      scope.moveTo = function(index) {
-        if (validatePage(scope.current) === true) {
-          return scope.current = index;
+      scope.moveTo = function(i) {
+        if (i < scope.current) {
+          scope.current = i;
+        }
+        if (scope.form.pages[scope.current].validate() === true) {
+          return scope.current = i;
         }
       };
       scope.moveToNext = function() {
@@ -226,60 +195,27 @@
         }
       };
       scope.isLast = function() {
-        if (scope.current === scope.definition.pages.length - 1) {
+        var i, _i, _ref, _ref1;
+        if (scope.current + 1 >= scope.form.pages.length) {
           return true;
-        } else {
-          return false;
         }
-      };
-      scope.nextTitle = function() {
-        if (scope.current + 1 < scope.definition.pages.length) {
-          return scope.definition.pages[scope.current + 1].title;
-        }
-      };
-      scope.errorsOnPage = function(p) {
-        return !$.isEmptyObject(scope.errors[p]);
-      };
-      watch = function(page, fieldName) {
-        var events;
-        events = {
-          ok: function() {
-            return delete scope.errors[page][fieldName];
-          },
-          error: function(e) {
-            return scope.errors[page][fieldName] = e;
-          }
-        };
-        return scope.service.watchField(fieldName, events);
-      };
-      scope.errors = [];
-      pageFields = [];
-      p = 0;
-      _ref = scope.definition.pages;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        page = _ref[_i];
-        scope.errors[p] = {};
-        pageFields[p] = [];
-        _ref1 = page.lines;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          line = _ref1[_j];
-          _ref2 = line.fields;
-          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-            field = _ref2[_k];
-            pageFields[p].push(field.name);
-            watch(p, field.name);
+        for (i = _i = _ref = scope.current + 1, _ref1 = scope.form.pages.length - 1; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = _ref <= _ref1 ? ++_i : --_i) {
+          if (scope.form.pages[i].display === true) {
+            return false;
           }
         }
-        _results.push(p += 1);
-      }
-      return _results;
+        return true;
+      };
+      return scope.nextTitle = function() {
+        if (scope.current + 1 < scope.form.pages.length) {
+          return scope.form.pages[scope.current + 1].title;
+        }
+      };
     };
     return {
       restrict: 'E',
       scope: {
-        definition: '=',
-        service: '='
+        form: '='
       },
       template: templates.wizard,
       link: l
@@ -288,13 +224,13 @@
 
   angular.module('CoolFormValidators').factory('emailValidator', function() {
     var validator;
-    validator = function(name, values, rule) {
+    validator = function(name, fields, options) {
       var p;
-      if ((values[name] == null) || typeof values[name] !== "string") {
+      if ((fields[name].value == null) || typeof fields[name].value !== "string") {
         return false;
       }
       p = /^([\w.-]+)@([\w.-]+)\.([a-zA-Z.]{2,6})$/i;
-      if ((values[name] != null) && values[name].match(p)) {
+      if (fields[name].value.match(p)) {
         return true;
       } else {
         return false;
@@ -308,11 +244,11 @@
 
   angular.module('CoolFormValidators').factory('exactSizeValidator', function() {
     var validator;
-    validator = function(name, values, rule) {
-      if ((values[name] == null) || typeof values[name] !== "string") {
+    validator = function(name, fields, options) {
+      if ((fields[name].value == null) || typeof fields[name].value !== "string") {
         return false;
       }
-      if (values[name].length === rule.options.size) {
+      if (fields[name].value.length === options.size) {
         return true;
       } else {
         return false;
@@ -326,11 +262,11 @@
 
   angular.module('CoolFormValidators').factory('maxSizeValidator', function() {
     var validator;
-    validator = function(name, values, rule) {
-      if ((values[name] == null) || typeof values[name] !== "string") {
+    validator = function(name, fields, options) {
+      if ((fields[name].value == null) || typeof fields[name].value !== "string") {
         return false;
       }
-      if (values[name].length <= rule.options.size) {
+      if (fields[name].value.length <= options.size) {
         return true;
       } else {
         return false;
@@ -344,11 +280,11 @@
 
   angular.module('CoolFormValidators').factory('minSizeValidator', function() {
     var validator;
-    validator = function(name, values, rule) {
-      if ((values[name] == null) || typeof values[name] !== "string") {
+    validator = function(name, fields, options) {
+      if ((fields[name].value == null) || typeof fields[name].value !== "string") {
         return false;
       }
-      if (values[name].length >= rule.options.size) {
+      if (fields[name].value.length >= options.size) {
         return true;
       } else {
         return false;
@@ -362,9 +298,9 @@
 
   angular.module('CoolFormValidators').factory('notBlankValidator', function() {
     var validator;
-    validator = function(name, values, rule) {
+    validator = function(name, fields, options) {
       var v;
-      v = values[name];
+      v = fields[name].value;
       if (v === void 0 || v === null) {
         return false;
       }
@@ -390,16 +326,36 @@
     };
   });
 
+  angular.module('CoolFormValidators').factory('notNullValidator', function() {
+    var validator;
+    validator = function(name, fields, options) {
+      var v;
+      v = fields[name].value;
+      if (v === void 0 || v === null) {
+        return false;
+      } else {
+        return true;
+      }
+    };
+    return {
+      validator: validator,
+      init: null
+    };
+  });
+
   angular.module('CoolFormValidators').factory('sameAsValidator', function() {
     var init, validator;
-    validator = function(name, values, rule) {
-      if (values[name] === values[rule.options.field]) {
+    validator = function(name, fields, options) {
+      if (fields[name].value === fields[options.field].value) {
         return true;
       } else {
         return false;
       }
     };
-    init = function(name, rule, services) {
+    init = function(name, fields, options) {
+      if (fields[options.field] != null) {
+        fields[options.field].onChange;
+      }
       return services.watchField(rule.options.field, null, null, function(value) {
         return services.validateField(name);
       });
@@ -410,7 +366,7 @@
     };
   });
 
-  angular.module('CoolFormValidators').factory('validators', function(emailValidator, exactSizeValidator, maxSizeValidator, minSizeValidator, notBlankValidator, sameAsValidator) {
+  angular.module('CoolFormValidators').factory('validators', function(emailValidator, exactSizeValidator, maxSizeValidator, minSizeValidator, notBlankValidator, notNullValidator, sameAsValidator) {
     var add, get, validators;
     validators = {
       email: emailValidator,
@@ -418,6 +374,7 @@
       max_size: maxSizeValidator,
       min_size: minSizeValidator,
       not_blank: notBlankValidator,
+      not_null: notNullValidator,
       same_as: sameAsValidator
     };
     get = function(name) {
@@ -426,8 +383,8 @@
       }
       return null;
     };
-    add = function(name, validator) {
-      return validators[name] = validator;
+    add = function(dep) {
+      return validators[dep.name] = angular.injector([dep.module]).get(dep.factory);
     };
     return {
       get: get,
@@ -435,102 +392,350 @@
     };
   });
 
-  angular.module('CoolFormServices').factory('displayService', function() {
-    return function(events, values) {
-      var display, register, shouldHide, shouldShow, valueIn;
-      valueIn = function(value, l) {
-        var e, _i, _len;
-        for (_i = 0, _len = l.length; _i < _len; _i++) {
-          e = l[_i];
-          if (e === value) {
-            return true;
-          }
+  angular.module('CoolFormServices').factory('coreService', function(validators, directivesService, networkService) {
+    return function(definition) {
+      var Displayable, Element, Field, Form, Line, Page, Validator, directives, form, _fields;
+      directives = directivesService();
+      _fields = {};
+      Element = (function() {
+        function Element(subElemName) {
+          this.subElemName = subElemName;
         }
-        return false;
-      };
-      shouldShow = function(conds) {
-        var cond, _i, _len;
-        for (_i = 0, _len = conds.length; _i < _len; _i++) {
-          cond = conds[_i];
-          if (valueIn(values[cond.field], cond.values)) {
-            return true;
-          }
-        }
-        return false;
-      };
-      shouldHide = function(conds) {
-        return !shouldShow(conds);
-      };
-      register = function(conds, cb, checker) {
-        var cond, _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = conds.length; _i < _len; _i++) {
-          cond = conds[_i];
-          _results.push(events.watchField(cond.field, {
-            change: function() {
-              return cb(checker(conds));
+
+        Element.prototype.isValid = function() {
+          var e, _i, _len, _ref;
+          _ref = this[this.subElemName];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            e = _ref[_i];
+            if (e.isValid() === false) {
+              return false;
             }
-          }));
+          }
+          return true;
+        };
+
+        Element.prototype.reset = function() {
+          var e, _i, _len, _ref, _results;
+          _ref = this[this.subElemName];
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            e = _ref[_i];
+            _results.push(e.reset());
+          }
+          return _results;
+        };
+
+        Element.prototype.validate = function() {
+          var e, valid, _i, _len, _ref;
+          valid = true;
+          _ref = this[this.subElemName];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            e = _ref[_i];
+            if (e.display === true && e.validate() === false) {
+              valid = false;
+            }
+          }
+          return valid;
+        };
+
+        return Element;
+
+      })();
+      Displayable = (function(_super) {
+        __extends(Displayable, _super);
+
+        Displayable.prototype._doDisplay = function(def, showOrHide) {
+          var field, values, _results,
+            _this = this;
+          _results = [];
+          for (field in def) {
+            values = def[field];
+            _results.push(_fields[field].onChange.push(function(v) {
+              var i, _i, _len;
+              for (_i = 0, _len = values.length; _i < _len; _i++) {
+                i = values[_i];
+                if (v === i) {
+                  _this.display = showOrHide;
+                  return;
+                }
+              }
+              return _this.display = !showOrHide;
+            }));
+          }
+          return _results;
+        };
+
+        function Displayable(def, subElemName) {
+          Displayable.__super__.constructor.call(this, subElemName);
+          this.display = true;
+          if (def['show_on'] != null) {
+            this._doDisplay(def['show_on'], true);
+          }
+          if (def['hide_on'] != null) {
+            this._doDisplay(def['hide_on'], false);
+          }
         }
-        return _results;
-      };
-      display = {
-        showWhen: function(conds, cb) {
-          return register(conds, cb, shouldShow);
-        },
-        hideWhen: function(conds, cb) {
-          return register(conds, cb, shouldHide);
+
+        return Displayable;
+
+      })(Element);
+      Form = (function(_super) {
+        __extends(Form, _super);
+
+        function Form(def) {
+          var d, p, _i, _len, _ref;
+          Form.__super__.constructor.call(this, "pages");
+          this.name = def['name'];
+          this.action = def['action'];
+          this.method = def['method'] == null ? "POST" : def['method'];
+          this.submitLabel = def['submit'];
+          this.resetLabel = def['reset'];
+          this.pages = (function() {
+            var _i, _len, _ref, _results;
+            _ref = def['pages'];
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              p = _ref[_i];
+              _results.push(new Page(p));
+            }
+            return _results;
+          })();
+          if (def['dependencies'] != null) {
+            _ref = def['dependencies'];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              d = _ref[_i];
+              switch (d.type) {
+                case 'validator':
+                  validators.add(d);
+                  break;
+                case 'directive':
+                  directives.add(d.name, d.tag);
+              }
+            }
+          }
         }
-      };
-      return display;
+
+        Form.prototype.submit = function(success, error) {
+          var k, params, v;
+          if (!this.validate()) {
+            return;
+          }
+          params = {
+            method: this.method,
+            action: this.action,
+            data: {},
+            success: success,
+            error: error
+          };
+          console.log(_fields);
+          for (k in _fields) {
+            v = _fields[k];
+            if (v.display === true) {
+              params.data[k] = v.value;
+            }
+          }
+          console.log(params);
+          return networkService().sendForm(params);
+        };
+
+        return Form;
+
+      })(Element);
+      Page = (function(_super) {
+        __extends(Page, _super);
+
+        function Page(def) {
+          var l;
+          Page.__super__.constructor.call(this, def, "lines");
+          this.title = def['title'];
+          this.description = def['description'];
+          this.lines = (function() {
+            var _i, _len, _ref, _results;
+            _ref = def['lines'];
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              l = _ref[_i];
+              _results.push(new Line(l));
+            }
+            return _results;
+          })();
+        }
+
+        return Page;
+
+      })(Displayable);
+      Line = (function(_super) {
+        __extends(Line, _super);
+
+        function Line(def) {
+          var f;
+          Line.__super__.constructor.call(this, def, "fields");
+          this.fields = (function() {
+            var _i, _len, _ref, _results;
+            _ref = def['fields'];
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              f = _ref[_i];
+              _results.push(new Field(f));
+            }
+            return _results;
+          })();
+        }
+
+        return Line;
+
+      })(Displayable);
+      Field = (function(_super) {
+        __extends(Field, _super);
+
+        function Field(def) {
+          var v;
+          Field.__super__.constructor.call(this, def);
+          this.name = def['name'];
+          this.type = def['type'];
+          this.label = def['label'];
+          this.size = def['size'] != null ? def['size'] != null : 1;
+          this.help = def['help'];
+          this["default"] = def['default'];
+          this.options = def['options'] != null ? def['options'] : {};
+          this.value = this["default"];
+          if (def['validators'] != null) {
+            this.validators = (function() {
+              var _i, _len, _ref, _results;
+              _ref = def['validators'];
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                v = _ref[_i];
+                _results.push(new Validator(v, this.name));
+              }
+              return _results;
+            }).call(this);
+          } else {
+            this.validators = [];
+          }
+          this.mandatory = this._isMandatory(def);
+          this.error = null;
+          this.valid = true;
+          this.onChange = [];
+          this.onValidate = [];
+          _fields[this.name] = this;
+        }
+
+        Field.prototype._isMandatory = function(def) {
+          if ((def['mandatory'] == null) || !def['mandatory']) {
+            return false;
+          }
+          this.mandatory = true;
+          return this.validators.push(new Validator({
+            'name': 'not_null'
+          }, this.name));
+        };
+
+        Field.prototype.isValid = function() {
+          return this.valid;
+        };
+
+        Field.prototype._doValidate = function(res, msg) {
+          var h, _i, _len, _ref;
+          _ref = this.onValidate;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            h = _ref[_i];
+            h(res);
+          }
+          this.valid = res;
+          this.error = msg;
+          return res;
+        };
+
+        Field.prototype.set = function(value) {
+          var h, _i, _len, _ref;
+          if (value === this.value) {
+            return;
+          }
+          this.value = value;
+          _ref = this.onChange;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            h = _ref[_i];
+            h(this.value);
+          }
+          return this._doValidate(true);
+        };
+
+        Field.prototype.reset = function() {
+          this.set(this["default"] ? this["default"] : null);
+          return this._doValidate(true);
+        };
+
+        Field.prototype.validate = function() {
+          var v, _i, _len, _ref;
+          _ref = this.validators;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            v = _ref[_i];
+            if (v.validate() === false) {
+              return this._doValidate(false, v.message);
+            }
+          }
+          return this._doValidate(true);
+        };
+
+        Field.prototype.directive = function() {
+          return directives.get(this.type);
+        };
+
+        return Field;
+
+      })(Displayable);
+      Validator = (function() {
+        function Validator(def, fieldName) {
+          var v;
+          this.name = def['name'];
+          this.message = def['message'];
+          this.options = def['options'];
+          this.fieldName = fieldName;
+          v = validators.get(this.name);
+          if (v === !null && (v.init != null)) {
+            v.init(this.fieldName, this.options, _fields);
+          }
+        }
+
+        Validator.prototype.validate = function() {
+          var v;
+          v = validators.get(this.name);
+          if (v === null) {
+            return true;
+          }
+          return v.validator(this.fieldName, _fields, this.options);
+        };
+
+        return Validator;
+
+      })();
+      if (definition['form'] != null) {
+        form = new Form(definition['form']);
+        form.reset();
+        return form;
+      } else {
+        return null;
+      }
     };
   });
 
-  angular.module('CoolFormServices').factory('eventService', function() {
+  angular.module('CoolFormServices').factory('directivesService', function() {
     return function() {
-      var event, handle, handlers, watchField;
-      handlers = {
-        ok: {},
-        error: {},
-        change: {}
+      var add, directives, get;
+      directives = {
+        text: "coolform-text"
       };
-      handle = function(fieldName, type, data) {
-        var fn, _i, _len, _ref, _results;
-        if ((handlers[type] == null) || (handlers[type][fieldName] == null)) {
-          return;
-        }
-        _ref = handlers[type][fieldName];
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          fn = _ref[_i];
-          if (data != null) {
-            _results.push(fn(data));
-          } else {
-            _results.push(fn());
-          }
-        }
-        return _results;
+      add = function(type, name) {
+        return directives[type] = name;
       };
-      watchField = function(fieldName, eventHandlers) {
-        var type, _results;
-        _results = [];
-        for (type in eventHandlers) {
-          if (handlers[type] != null) {
-            if (handlers[type][fieldName] == null) {
-              handlers[type][fieldName] = [];
-            }
-            _results.push(handlers[type][fieldName].push(eventHandlers[type]));
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
+      get = function(type) {
+        return directives[type];
       };
-      event = {
-        handle: handle,
-        watchField: watchField
+      return {
+        get: get,
+        add: add
       };
-      return event;
     };
   });
 
@@ -545,13 +750,13 @@
         });
         return deferred.promise;
       };
-      sendForm = function(params, data) {
+      sendForm = function(params) {
         var cfg;
         cfg = {
           type: params.method,
-          url: params.url,
+          url: params.action,
           contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-          data: data,
+          data: params.data,
           success: params.success,
           error: params.error,
           headers: params.headers
@@ -566,112 +771,9 @@
     };
   });
 
-  angular.module('CoolFormServices').factory('registrationService', function(validationService, eventService, networkService, displayService) {
-    return function(form) {
-      var changeValue, display, events, registerDependencies, registerField, reset, services, setFields, submit, validation, values;
-      events = eventService();
-      validation = validationService(events);
-      values = {};
-      display = displayService(events, values);
-      setFields = function(pages) {
-        var f, line, p, page, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _results;
-        p = 0;
-        _results = [];
-        for (_i = 0, _len = pages.length; _i < _len; _i++) {
-          page = pages[_i];
-          _ref = page.lines;
-          for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-            line = _ref[_j];
-            _ref1 = line.fields;
-            for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
-              f = _ref1[_k];
-              validation.initValidation(f, services);
-            }
-          }
-          _results.push(p += 1);
-        }
-        return _results;
-      };
-      changeValue = function(fieldName, value) {
-        values[fieldName] = value;
-        validation.removeError(fieldName);
-        return events.handle(fieldName, "change", value);
-      };
-      registerField = function(fieldName, eventHandlers) {
-        events.watchField(fieldName, eventHandlers);
-        return function(value) {
-          return changeValue(fieldName, value);
-        };
-      };
-      submit = function() {
-        var params;
-        if (validation.validateAll(values) === false) {
-          return;
-        }
-        params = {
-          url: form.url,
-          method: form.method != null ? form.method : "POST",
-          success: function() {
-            return console.log("success");
-          },
-          error: function() {
-            return console.log("error");
-          },
-          headers: form.headers != null ? form.headers : {}
-        };
-        return networkService().sendForm(params, values);
-      };
-      registerDependencies = function(deps) {
-        var d, f, _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = deps.length; _i < _len; _i++) {
-          d = deps[_i];
-          f = angular.injector([d.module]).get(d.factory);
-          if (d.type === "validator") {
-            _results.push(validation.add(d.name, f));
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
-      };
-      reset = function() {
-        var k, _i, _len, _ref, _results;
-        _ref = Object.keys(values);
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          k = _ref[_i];
-          _results.push(changeValue(k, null));
-        }
-        return _results;
-      };
-      services = {
-        display: display,
-        registerField: registerField,
-        validateField: function(fieldName) {
-          return validation.validateField(fieldName, values);
-        },
-        validateFields: function(fieldList) {
-          return validation.validateFields(fieldList, values);
-        },
-        validateAll: function() {
-          return validation.validateAll(values);
-        },
-        watchField: events.watchField,
-        reset: reset,
-        submit: submit
-      };
-      if (form.dependencies != null) {
-        registerDependencies(form.dependencies);
-      }
-      setFields(form.pages);
-      return services;
-    };
-  });
-
   angular.module('CoolFormServices').factory('validationService', function(validators) {
     return function(events) {
-      var errors, fields, initValidation, removeError, setError, validateAll, validateField, validateFields;
+      var errors, fields, initValidation, removeError, setError, validateAll, validateField, validateFields, validateForRule;
       errors = {};
       fields = {};
       removeError = function(fieldName) {
@@ -680,6 +782,7 @@
         return true;
       };
       setError = function(fieldName, msg) {
+        msg = msg === null ? true : msg;
         errors[fieldName] = msg;
         events.handle(fieldName, "error", msg);
         return false;
@@ -696,18 +799,30 @@
           });
         }
       };
+      validateForRule = function(fieldName, rule, values) {
+        var msg, vl;
+        msg = null;
+        vl = validators.get(rule.validator);
+        if (!vl || (vl.validator == null)) {
+          return true;
+        }
+        if (vl.validator(fieldName, values, rule) === false) {
+          if ((rule.options != null) && (rule.options.message != null)) {
+            msg = rule.options.message;
+          }
+          return setError(fieldName, msg);
+        }
+        return true;
+      };
       validateField = function(fieldName, values) {
-        var field, rule, vl, _i, _len, _ref;
+        var field, rule, _i, _len, _ref;
         field = fields[fieldName];
         if (field.validation != null) {
           _ref = field.validation;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             rule = _ref[_i];
-            vl = validators.get(rule.validator);
-            if (vl && (vl.validator != null)) {
-              if (!vl.validator(fieldName, values, rule)) {
-                return setError(fieldName, rule.options.message);
-              }
+            if (!validateForRule(fieldName, rule, values)) {
+              return false;
             }
           }
         }
@@ -741,15 +856,14 @@
   });
 
   templates = {
-    container: "<form>\n  <div class=\"container-fluid\">\n\n<div ng-if=\"definition.title || definition.description\" class=\"row\">\n  <h3 ng-if=\"definition.title\">{{ definition.title }}</h3>\n  <div ng-if=\"definition.description\" class=\"well well-sm\">\n	{{ definition.description }}\n  </div>\n</div>\n\n<coolform-wizard ng-if=\"wizard\" definition=\"definition\" service=\"service\">\n</coolform-wizard>\n\n<div ng-if=\"page\">\n  <coolform-page page=\"page\" service=\"service\"></coolform-page>\n  <div class=\"row\">\n	<coolform-submit definition=\"definition\" service=\"service\">\n	</coolform-submit>\n  </div>\n</div>	\n\n  </div>\n</form>",
-    controller: "<div>\n  <div ng-if=\"!definition\">\n  	loading {{ url }}\n  </div>\n\n  <div ng-if=\"definition\">\n<coolform-container definition=\"definition\" service=\"service\">\n</coolform-container>\n  </div>\n</div>",
-    field: "<div class=\"form-group\" ng-show=\"show\" ng-class=\"{'has-error': error}\" >\n\n  <label class=\"control-label\" for=\"email\">\n{{ field.label }}\n  </label>\n  \n  <div class=\"coolform-popover\">\n<ng-switch on=\"field.type\">\n  <coolform-text ng-switch-when=\"text\" field=\"field\" service=\"service\"></coolform-text>\n</ng-switch>\n  </div>\n  \n  <p ng-show=\"error\" class=\"help-block\">{{ error }}</p>\n  <p ng-hide=\"error\" class=\"help-block\" ng-if=\"field.help\">{{ field.help }}</p>\n    \n</div>",
-    header: "<div>\n<h4 class=\"text-muted\">{{ header.title }}</h4>\n<div>{{ header.description }}</div>\n</div>",
-    line: "<div ng-repeat=\"field in fields\">\n  <div class=\"col-md-{{ field.size * 3 }}\" >\n<coolform-field \n   field=\"field\" \n   service=\"service\">\n</coolform-field>\n  </div>\n</div>",
-    page: "<div ng-if=\"page.title || page.description\" class=\"row\">\n<h4 ng-if=\"page.title\" class=\"text-primary\">{{ page.title }}</h4>\n<div ng-if=\"page.description\">{{ page.description }}</div>\n</div>\n\n<div class=\"row\" ng-repeat=\"line in page.lines\">\n<coolform-header ng-if=\"line.header\" header=\"line.header\"></coolform-header>\n<coolform-line \n	 ng-if=\"line.fields\" \n	 fields=\"line.fields\" \n	 service=\"service\">\n</coolform-line>\n</div>",
-    submit: "<div class=\"well well-sm\">\n  <button \n ng-click=\"submit()\" \n type=\"button\" \n class=\"btn btn-primary\">\n{{ definition.submit }}\n  </button>\n  <button \n ng-click=\"reset()\"\n type=\"button\" \n class=\"btn btn-default\">\n{{ definition.reset }}\n  </button>\n</div>",
+    container: "<form>\n  <div class=\"container-fluid\">\n\n<coolform-wizard ng-if=\"wizard\" form=\"form\">\n</coolform-wizard>\n\n<div ng-if=\"page\">\n  <coolform-page page=\"page\" service=\"service\"></coolform-page>\n  \n  <coolform-submit form=\"form\"></coolform-submit>	  \n\n</div>	\n\n  </div>\n</form>",
+    controller: "<div>\n  <div ng-if=\"!form\">\n  	loading {{ url }}\n  </div>\n\n  <div ng-if=\"form\">\n<coolform-container form=\"form\">\n</coolform-container>\n  </div>\n</div>",
+    field: "<div class=\"form-group\" \n ng-show=\"field.display\" \n ng-class=\"{'has-error': !field.valid}\" >\n\n  <label class=\"control-label\" for=\"{{ field.name }}\">\n{{ field.name }}\n<span ng-if=\"field.mandatory\">*</span>\n  </label>\n\n  <div>\n<coolform-dynamic field=\"field\"></coolform-dynamic>\n  </div>\n\n  <p class=\"help-block\" ng-bind-html=\"lbl\"></p>\n    \n</div>",
+    line: "<div class=\"row\" ng-show=\"line.display\">\n  <div ng-repeat=\"field in line.fields\">\n<div class=\"col-md-{{ field.size * 3 }}\" >\n  <coolform-field field=\"field\"></coolform-field>\n</div>\n  </div>\n</div>",
+    page: "<div ng-if=\"page.title || page.description\" class=\"row\">\n  <div class=\"col-md-12\">\n<h4 ng-if=\"page.title\" class=\"text-primary\">{{ page.title }}</h4>\n<div ng-if=\"page.description\">\n  <div ng-bind-html=\"page.description\"></div>\n</div>\n  </div>\n</div>\n\n<coolform-line ng-repeat=\"line in page.lines\" line=\"line\"></coolform-line>",
+    submit: "<div class=\"row\">\n  <div class=\"col-md-12\">\n<div class=\"well well-sm\">\n  <button \n	 ng-click=\"form.submit()\" \n	 type=\"button\" \n	 class=\"btn btn-primary\">\n	{{ form.submitLabel }}\n  </button>\n  <button \n	 ng-if=\"form.resetLabel\"\n	 ng-click=\"form.reset()\"\n	 type=\"button\" \n	 class=\"btn btn-default\">\n	{{ form.resetLabel }}\n  </button>\n</div>\n  </div>\n</div>",
     text: "<input \ntype=\"{{ type }}\" \nclass=\"form-control\" \nplaceholder=\"{{ field.placeholder }}\" \nng-model=\"value\"/>",
-    wizard: "<div class=\"row\">\n  <ul class=\"nav nav-tabs\">\n<li ng-repeat=\"page in definition.pages\" ng-class=\"{active: isCurrent($index)}\">\n  <a ng-click=\"moveTo($index)\"\n	 ng-class=\"{'text-danger': errorsOnPage($index)}\"\n	 href=\"\">\n	{{ page.title }}\n  </a>\n<li>\n  </ul>\n</div>\n\n<div ng-repeat=\"page in definition.pages\">\n  <coolform-page ng-show=\"isCurrent($index)\" page=\"page\" service=\"service\">\n  </coolform-page>\n</div>\n\n<div ng-hide=\"isLast()\" class=\"well well-sm\">\n  <button ng-click=\"moveToNext()\" \n	  type=\"button\"\n	  class=\"btn btn-primary\"\n	  ng-class=\"{disabled: errorsOnPage(current)}\">\n<span class=\"glyphicon glyphicon-arrow-right\"></span>\n{{ nextTitle() }}\n  </button>\n</div>\n\n<coolform-submit ng-show=\"isLast()\" service=\"service\" definition=\"definition\">\n</coolform-submit>"
+    wizard: "<div class=\"row\">\n  <div class=\"col-md-12\">\n<ul class=\"nav nav-tabs\">\n  <li ng-repeat=\"page in form.pages\"\n	  ng-show=\"page.display\"\n	  ng-class=\"{active: isCurrent($index)}\">\n	<a ng-click=\"moveTo($index)\"\n	   ng-class=\"{'text-danger': !form.pages[$index].isValid()}\"\n	   href=\"\">\n	  {{ page.title }}\n	</a>\n  <li>\n</ul>\n  </div>\n</div>\n\n<div ng-repeat=\"page in form.pages\">\n  <coolform-page ng-show=\"isCurrent($index)\" page=\"page\"></coolform-page>\n</div>\n\n<div ng-hide=\"isLast()\" class=\"row\">\n  <div class=\"col-md-12\">\n<div  class=\"well well-sm\">\n  <button ng-click=\"moveToNext()\" \n		  type=\"button\"\n		  class=\"btn btn-primary\"\n		  ng-class=\"{'btn-danger': !form.pages[current].isValid()}\">\n	<span class=\"glyphicon glyphicon-arrow-right\"></span>\n	{{ nextTitle() }}\n  </button>\n  \n</div>\n  </div>\n</div>\n\n<coolform-submit ng-show=\"isLast()\" form=\"form\"></coolform-submit>"
   };
 
 }).call(this);

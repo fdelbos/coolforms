@@ -1,10 +1,16 @@
-<div class="form-group" ng-show="show" ng-class="{'has-error': error}" >
+<div class="form-group" 
+	 ng-show="field.display" 
+	 ng-class="{'has-error': !field.valid}" >
 
-  <label class="control-label" for="email" ng-bind-html="field.label"></label>
-  
-  <coolform-dynamic field="field" service="service"></coolform-dynamic>
-    
-  <p ng-show="error" class="help-block" ng-bind-html="errorMsg"></p>
-  <p ng-hide="error" class="help-block" ng-if="field.help" ng-bind-html="field.help"></p>
+  <label class="control-label" for="{{ field.name }}">
+	{{ field.name }}
+	<span ng-if="field.mandatory">*</span>
+  </label>
+
+  <div>
+	<coolform-dynamic field="field"></coolform-dynamic>
+  </div>
+
+  <p class="help-block" ng-bind-html="lbl"></p>
     
 </div>

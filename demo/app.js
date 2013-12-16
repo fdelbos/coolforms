@@ -4,8 +4,8 @@
 
   angular.module('DemoModule', []).factory('demoFactory', function() {
     var validator;
-    validator = function(name, values, rule) {
-      if ((values[name] != null) && values[name] === 'demo') {
+    validator = function(name, fields, options) {
+      if ((fields[name].value != null) && fields[name].value === 'demo') {
         return true;
       }
       return false;
@@ -19,18 +19,14 @@
   angular.module('AnotherDemoModule', []).directive('demoDirective', function() {
     var l;
     l = function(scope) {
-      var handlers, setValue;
-      handlers = {
-        change: function(nVal) {
-          if (scope.value !== nVal) {
-            return scope.value = nVal;
-          }
+      scope.value = scope.field.value;
+      scope.field.onChange.push(function(v) {
+        if (v !== scope.value) {
+          return scope.value = v;
         }
-      };
-      setValue = scope.service.registerField(scope.field.name, handlers);
-      scope.value = scope.field.value ? value : "";
+      });
       return scope.$watch('value', function(v, o) {
-        return setValue(v);
+        return scope.field.set(v);
       });
     };
     return {

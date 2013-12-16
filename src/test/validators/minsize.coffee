@@ -10,19 +10,31 @@ describe 'minsize tests', ->
 
   beforeEach(module('CoolFormValidators'))
 
-  rules =
-    options:
-      size: 4
+  options =
+    size: 4
 
-  it 'validate a correct string', inject((minSizeValidator) ->
-    expect(minSizeValidator.validator('f', {'f':'fred.delbos@gmail.com'}, rules)).toEqual true
-    expect(minSizeValidator.validator('f', {'f':'1234'}, rules)).toEqual true
-    expect(minSizeValidator.validator('f', {'f':'234'}, rules)).toEqual false
-    expect(minSizeValidator.validator('f', {'f':'    '}, rules)).toEqual true
-  )
+  fields =
+    f1:
+      value: 'dasdafadatesfewtwf'
+    f2:
+      value: '1234'
+    f3:
+      value: '234'
+    f4:
+      value: '    '
+    f5:
+      value: null
+    f6:
+      value: 4242
+    f7:
+      value: false
 
-  it 'validate wrong stuffs', inject((minSizeValidator) ->
-    expect(minSizeValidator.validator('f', {'f':null}, rules)).toEqual false
-    expect(minSizeValidator.validator('f', {}, rules)).toEqual false
-    expect(minSizeValidator.validator('f', {'f': false}, rules)).toEqual false
+  it 'validate ', inject((minSizeValidator) ->
+    expect(minSizeValidator.validator('f1', fields, options)).toEqual true
+    expect(minSizeValidator.validator('f2', fields, options)).toEqual true
+    expect(minSizeValidator.validator('f3', fields, options)).toEqual false
+    expect(minSizeValidator.validator('f4', fields, options)).toEqual true
+    expect(minSizeValidator.validator('f5', fields, options)).toEqual false
+    expect(minSizeValidator.validator('f6', fields, options)).toEqual false
+    expect(minSizeValidator.validator('f7', fields, options)).toEqual false
   )

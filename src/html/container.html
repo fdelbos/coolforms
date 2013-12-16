@@ -1,22 +1,14 @@
 <form>
   <div class="container-fluid">
 	
-	<div ng-if="definition.title || definition.description" class="row">
-	  <h3 ng-if="definition.title">{{ definition.title }}</h3>
-	  <div ng-if="definition.description" class="well well-sm">
-		<div ng-bind-html="definition.description"></div>
-	  </div>
-	</div>
-
-	<coolform-wizard ng-if="wizard" definition="definition" service="service">
+	<coolform-wizard ng-if="wizard" form="form">
 	</coolform-wizard>
 
 	<div ng-if="page">
 	  <coolform-page page="page" service="service"></coolform-page>
-	  <div class="row">
-		<coolform-submit definition="definition" service="service">
-		</coolform-submit>
-	  </div>
+	  
+	  <coolform-submit form="form"></coolform-submit>	  
+
 	</div>	
 
   </div>

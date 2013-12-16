@@ -7,7 +7,7 @@
 ## 
 
 angular.module('CoolFormServices').
-  factory('directivesService', (validators) ->
+  factory('directivesService', ->
 
     return ->
 
@@ -15,7 +15,8 @@ angular.module('CoolFormServices').
         text: "coolform-text"
 
       add = (type, name) -> directives[type] = name
-      get = (type) -> directives[type]
+      get = (type) ->
+        directives[type]
 
       return {
         get: get
