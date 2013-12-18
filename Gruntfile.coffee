@@ -6,13 +6,13 @@
 ## file 'LICENSE.txt', which is part of this source code package.
 ## 
 
-fs = require('fs')
+fs = require('fs-extra')
 path = require('path')
 glob = require("glob")
 jade = require('jade')
-marked = require("marked")
 htmlmin = require("html-minifier")
-
+marked = require("marked")
+marked.setOptions({'sanitize':false})
 
 module.exports = (grunt) ->
 
@@ -85,6 +85,8 @@ module.exports = (grunt) ->
   grunt.registerTask(
     'doc', 'Generate documentation', ->
       fs.mkdir('doc')
+      fs.copySync('site/static', 'doc/static')
+      fs.copySync('coolforms.js', 'doc/static/coolforms.js')
       tmpl = jade.compile(fs.readFileSync('site/template.jade'), {'pretty':true})
       mds = glob.sync('site/*.md')
       mds.map (f) ->
