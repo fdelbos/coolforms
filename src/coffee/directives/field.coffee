@@ -13,11 +13,11 @@ angular.module('CoolFormDirectives').
       scope.lbl = scope.field.label
       scope.$watch('field.valid', (v) ->
         switch v
-          when true then scope.lbl = scope.field.label
+          when true then scope.help = scope.field.help
           when false
             if !scope.field.error or scope.field.error == ""
-              scope.lbl = scope.field.label
-            else scope.lbl = scope.field.error
+              scope.help = scope.field.help
+            else scope.help = scope.field.error
       )
                         
     return {
