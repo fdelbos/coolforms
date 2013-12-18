@@ -26,6 +26,7 @@
 		"grunt-karma": "latest",
 		"html-minifier": "latest",
 		"jade": "latest",
-		"marked": "latest"
+		"marked": "latest",
+		"fs-extra": "latest"
   }
 }
