@@ -66,4 +66,4 @@ angular.module('app', ['CoolForm']);
 
 Well you are probably curious to know more about definitions so jump to the [Form Definition page](https://github.com/fdelbos/coolforms/wiki/Form-Definition) where you will learn a great deal about it.
 
-Also you may want to build the project yourself than go to [Building and Testing](building-and-testing.html).
+Also you may want to build the project yourself: [Building and Testing](building-and-testing.html).
