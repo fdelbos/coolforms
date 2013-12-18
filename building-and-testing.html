@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>coolfoms</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <style>
+      body { padding-top: 20px; padding-bottom: 20px; }
+      .navbar { margin-bottom: 20px; }
+      
+      
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-sanitize.min.js"></script>
+    <script src="static/coolforms.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div role="navigation" class="navbar navbar-default">
+        <div class="navbar-header">
+          <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="index.html" class="navbar-brand">CoolForms</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="https://github.com/fdelbos/coolforms/releases">Download</a></li>
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Documentation<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="getting-started.html">Getting Started</a></li>
+                <li><a href="building-and-testing.html">Building and Testing</a></li>
+                <li><a href="">Form Definition</a></li>
+                <li><a href="">Custom Validator</a></li>
+                <li><a href="">Custom Field</a></li>
+              </ul>
+            </li>
+            <li><a href="">Show Case</a></li>
+            <li><a href="">Editor</a></li>
+          </ul>
+        </div>
+      </div><a href="https://github.com/fdelbos/coolforms"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a><h1 id="building-and-testing">Building and Testing</h1>
+<h3 id="dependencies-and-compilation">Dependencies and Compilation</h3>
+<ol>
+<li><p>Before all you should have [node js] (<a href="http://nodejs.org/">http://nodejs.org/</a>) and npm installed.</p>
+</li>
+<li><p>The project is build and tested via <a href="http://gruntjs.com/">GruntJS</a></p>
+<pre><code>npm install -g grunt-cli</code></pre>
+</li>
+<li><p>Clone the project locally:</p>
+<pre><code>git clone https://github.com/fdelbos/coolforms.git</code></pre>
+</li>
+<li><p>Go to the project directory: </p>
+<pre><code>cd coolforms</code></pre>
+</li>
+<li><p>Install node dependencies: </p>
+<pre><code>npm install</code></pre>
+</li>
+<li><p>Once everything is installed you can simply run grunt to build the js file and it&#39;s minified version.</p>
+<pre><code>grunt</code></pre>
+</li>
+</ol>
+<h3 id="testing">Testing</h3>
+<p>If you want to develop your own features or participate to the project, you most likely want to run the unit tests. To do so run:</p>
+<pre><code>grunt test</code></pre>
+<p>on the command line, it will start <a href="http://karma-runner.github.io/0.8/plus/AngularJS.html">karma</a>. Karma is configured for Chrome by default but you can add your favorite browser by adding it to <code>karma.conf.coffe</code> in the entry <code>browsers</code> for example if you want to test in  firefox as well, write :</p>
+<pre><code>browsers: [&#39;Chrome&#39;, &#39;Firefox&#39;]</code></pre>
+<p>Also a test server is available with a demo page for convenience, you can start server with <code>grunt server</code> and go to <a href="http://localhost:8000/demo/"><a href="http://localhost:8000/demo/">http://localhost:8000/demo/</a></a> to view it. Note that in this mode Grunt will watch the files in <code>src</code> and rebuild <code>coolform.js</code> if it detect a change. Finaly <code>grunt test</code> and <code>grunt server</code> are not exclusives, you can run them simultaneously.</p>
+      
+    </div>
+  </body>
+</html>
