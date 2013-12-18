@@ -1,8 +1,16 @@
+<div class="row" ng-if="submitError">
+  <div class="col-md-12">
+	<div>
+	  <div ng-include=" 'coolForm.error_submit' "></div>
+	</div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-md-12">
 	<div class="well well-sm">
 	  <button 
-		 ng-click="form.submit()" 
+		 ng-click="submit()" 
 		 type="button" 
 		 class="btn btn-primary">
 		{{ form.submitLabel }}

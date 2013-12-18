@@ -10,9 +10,13 @@ angular.module('CoolFormDirectives').
   directive('coolformSubmit', ($templateCache, networkService)->
 
     l = (scope) ->
-      # scope.submit = -> scope.form.submit()
-      # scope.reset = -> scope.form.reset()
 
+      scope.submitError = false
+      submitError = ->
+        scope.submitError = true
+        scope.$apply()
+      scope.submit = -> scope.form.submit(null, submitError)
+      
     return {
       restrict: 'E'
       scope:
