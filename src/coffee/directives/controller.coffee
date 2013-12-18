@@ -10,15 +10,21 @@ angular.module('CoolForm').
   directive('coolform', ($templateCache, networkService, coreService) ->
 
     l = (scope, elem, attr) ->
-      
-      if scope.url?
-        networkService().getJSON(scope.url).then((definition) ->
+
+      scope.error = false
+      display_error = ->
+        scope.error = true
+        scope.$apply()
+
+      load = ->
+        networkService().getJSON(scope.url, display_error).then((definition) ->
           scope.form = coreService(definition)
         )
-
+        
+      if scope.url? then load()
       else if scope.definition?
         scope.form = coreService(scope.definition)
-        
+                        
     return {
       restrict: 'E'
       scope:

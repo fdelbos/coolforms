@@ -10,10 +10,10 @@ angular.module('CoolFormServices').
   factory('networkService', ($q) ->
     return ->
 
-      getJSON = (url) ->
+      getJSON = (url, error) ->
         deferred = $q.defer()
         $.getJSON(url, (data) ->
-          deferred.resolve(data))
+          deferred.resolve(data)).fail(error)
         return deferred.promise
 
       sendForm = (params) ->
