@@ -1,0 +1,16 @@
+coolforms.coffee
+
+/src/coffee/templates.coffee
+/src/coffee/templates_cache.coffee
+/doc/
+/npm-debug.log
+
+coolforms.js	
+
+coolforms.min.js
+
+/node_modules/
+
+.DS_Store
+
+/coolforms.js
