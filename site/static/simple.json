@@ -1,0 +1,62 @@
+{
+    "form": {
+        "reset": "Reset",
+        "name": "form",
+        "submit": "Submit",
+        "method": "POST",
+        "action": "",
+        "pages": [
+            {
+                "lines": [
+                    {
+                        "fields": [
+                            {
+                                "type": "text",
+                                "size": 1,
+                                "mandatory": true,
+                                "name": "fname",
+                                "label": "First Name"
+                            },
+                            {
+                                "type": "text",
+                                "size": 1,
+                                "mandatory": true,
+                                "name": "sname",
+                                "label": "Second Name"
+                            },
+                            {
+                                "name": "email",
+                                "label": "Email",
+                                "validators": [
+                                    {
+                                        "message": "invalid email address",
+                                        "name": "email"
+                                    }
+                                ],
+                                "type": "text",
+                                "size": 1
+                            },
+                            {
+                                "help": "at least 6 chars",
+                                "label": "Password",
+                                "validators": [
+                                    {
+                                        "message": "too small",
+                                        "name": "min_size",
+                                        "options": {
+                                            "size": 6
+                                        }
+                                    }
+                                ],
+                                "size": 1,
+                                "type": "text",
+                                "name": "password",
+								"options": {"type": "password"}
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
