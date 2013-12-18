@@ -11,16 +11,19 @@ angular.module('CoolForm').
 
     l = (scope, elem, attr) ->
 
-      scope.error = false
+      scope.loadingError = false
       display_error = ->
-        scope.error = true
+        scope.loadingError = true
         scope.$apply()
 
       load = ->
+        console.log "loading"
         networkService().getJSON(scope.url, display_error).then((definition) ->
           scope.form = coreService(definition)
+          scope.loadingError = false
         )
-        
+      scope.reload = load
+                
       if scope.url? then load()
       else if scope.definition?
         scope.form = coreService(scope.definition)
