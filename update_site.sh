@@ -3,8 +3,8 @@
 grunt && grunt doc
 git checkout gh-pages
 mv doc/*.html .
-mv docs/static .
-rm -fr docs
+mv doc/static .
+rm -fr doc
 git add *.html static
 git commit -m "updating site"
 git push origin gh-pages 
