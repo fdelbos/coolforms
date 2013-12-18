@@ -3,7 +3,7 @@
 	 ng-class="{'has-error': !field.valid}" >
 
   <label class="control-label" for="{{ field.name }}">
-	{{ field.name }}
+	{{ field.label }}
 	<span ng-if="field.mandatory">&nbsp;*</span>
   </label>
 
@@ -11,6 +11,6 @@
 	<coolform-dynamic field="field"></coolform-dynamic>
   </div>
 
-  <p class="help-block" ng-bind-html="lbl"></p>
+  <p class="help-block" ng-bind-html="help"></p>
     
 </div>
