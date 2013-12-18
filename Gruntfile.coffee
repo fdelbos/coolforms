@@ -30,7 +30,7 @@ module.exports = (grunt) ->
                         
     uglify:
       options:
-        banner: '/*! <%= pkg.name %> <%= pkg.version %> */\n'
+        banner: '/*\n * <%= pkg.name %> v<%= pkg.version %>\n * Copyright (c) 2013 Frederic Delbos | https://raw.github.com/fdelbos/coolforms/master/LICENSE.txt\n */\n'
         mangle: false
       build:
         src: '<%= pkg.name %>.js'
