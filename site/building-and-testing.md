@@ -1,6 +1,7 @@
 # Building and Testing
 
 ### Dependencies and Compilation
+
 1. Before all you should have [node js](http://nodejs.org/) and npm installed.
 
 2. The project is build and tested via [GruntJS](http://gruntjs.com/)
