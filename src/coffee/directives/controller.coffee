@@ -17,7 +17,6 @@ angular.module('CoolForm').
         scope.$apply()
 
       load = ->
-        console.log "loading"
         networkService().getJSON(scope.url, display_error).then((definition) ->
           scope.form = coreService(definition)
           scope.loadingError = false
