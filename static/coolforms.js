@@ -164,7 +164,12 @@
         scope.submitError = true;
         return scope.$apply();
       };
+      scope.reset = function() {
+        scope.submitError = false;
+        return scope.form.reset();
+      };
       return scope.submit = function() {
+        scope.submitError = false;
         return scope.form.submit(null, submitError);
       };
     };
@@ -911,7 +916,7 @@
     $templateCache.put("coolForm.line", "<div class=\"row\" ng-show=\"line.display\"><div ng-repeat=\"field in line.fields\"><div class=\"col-md-{{ field.size * 3 }}\"><coolform-field field=\"field\"></coolform-field></div></div></div>");
     $templateCache.put("coolForm.loading", "<div class=\"alert alert-info\"><strong>Loading form</strong><p>Please wait while loading the form</p></div>");
     $templateCache.put("coolForm.page", "<div ng-if=\"page.title || page.description\" class=\"row\"><div class=\"col-md-12\"><h4 ng-if=\"page.title\" class=\"text-primary\">{{ page.title }}</h4><div ng-if=\"page.description\"><div ng-bind-html=\"page.description\"></div></div></div></div><coolform-line ng-repeat=\"line in page.lines\" line=\"line\"></coolform-line>");
-    $templateCache.put("coolForm.submit", "<div class=\"row\" ng-if=\"submitError\"><div class=\"col-md-12\"><div><div ng-include=\" 'coolForm.error_submit' \"></div></div></div></div><div class=\"row\"><div class=\"col-md-12\"><div class=\"well well-sm\"><button ng-click=\"submit()\" type=\"button\" class=\"btn btn-primary\">{{ form.submitLabel }}</button> <button ng-if=\"form.resetLabel\" ng-click=\"form.reset()\" type=\"button\" class=\"btn btn-default\">{{ form.resetLabel }}</button></div></div></div>");
+    $templateCache.put("coolForm.submit", "<div class=\"row\" ng-if=\"submitError\"><div class=\"col-md-12\"><div><div ng-include=\" 'coolForm.error_submit' \"></div></div></div></div><div class=\"row\"><div class=\"col-md-12\"><div class=\"well well-sm\"><button ng-click=\"submit()\" type=\"button\" class=\"btn btn-primary\">{{ form.submitLabel }}</button> <button ng-if=\"form.resetLabel\" ng-click=\"reset()\" type=\"button\" class=\"btn btn-default\">{{ form.resetLabel }}</button></div></div></div>");
     $templateCache.put("coolForm.text", "<input type=\"{{ type }}\" class=\"form-control\" placeholder=\"{{ field.placeholder }}\" ng-model=\"value\">");
     return $templateCache.put("coolForm.wizard", "<div class=\"row\"><div class=\"col-md-12\"><ul class=\"nav nav-tabs\"><li ng-repeat=\"page in form.pages\" ng-show=\"page.display\" ng-class=\"{active: isCurrent($index)}\"><a ng-click=\"moveTo($index)\" ng-class=\"{'text-danger': !form.pages[$index].isValid()}\" href=\"\">{{ page.title }}</a></li><li></li></ul></div></div><div ng-repeat=\"page in form.pages\"><coolform-page ng-show=\"isCurrent($index)\" page=\"page\"></coolform-page></div><div ng-hide=\"isLast()\" class=\"row\"><div class=\"col-md-12\"><div class=\"well well-sm\"><button ng-click=\"moveToNext()\" type=\"button\" class=\"btn btn-primary\" ng-class=\"{'btn-danger': !form.pages[current].isValid()}\"><span class=\"glyphicon glyphicon-arrow-right\"></span>{{ nextTitle() }}</button></div></div></div><coolform-submit ng-show=\"isLast()\" form=\"form\"></coolform-submit>");
   });
