@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>coolfoms</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <style>
+      body { padding-top: 20px; padding-bottom: 20px; }
+      .navbar { margin-bottom: 20px; }
+      
+      
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-sanitize.min.js"></script>
+    <script src="static/coolforms.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div role="navigation" class="navbar navbar-default">
+        <div class="navbar-header">
+          <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="index.html" class="navbar-brand">CoolForms</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Documentation<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="getting-started.html">Getting Started</a></li>
+                <li><a href="building-and-testing.html">Building and Testing</a></li>
+                <!-- li-->
+                <!--   a(href="") Form Definition-->
+                <!-- li-->
+                <!--   a(href="") Custom Validator-->
+                <!-- li-->
+                <!--   a(href="") Custom Field-->
+              </ul>
+            </li>
+            <li><a href="https://github.com/fdelbos/coolforms/releases">Releases</a></li>
+            <li><a href="https://raw.github.com/fdelbos/coolforms/master/LICENSE.txt">License</a></li>
+            <!-- li-->
+            <!--   a(href="") Editor-->
+          </ul>
+        </div>
+      </div><a href="https://github.com/fdelbos/coolforms"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a><h1 id="form-definition">Form Definition</h1>
+<p>With CoolForms, forms are displayed automatically from a definition. This allows you to create them on the fly and avoir cluttering your code with HMTL. In this document you will learn how to create them from scratch.</p>
+<p>Also know that a python library exists : <a href="http://fdelbos.github.io/py-coolforms/">py-coolforms</a> allowing you to generate a JSON definition on the fly.</p>
+<h3 id="a-json-hireachy-model">A JSON hireachy model</h3>
+<p>Form definitions are orginized in a hireachical fashion: A Form contains pages that contains lines that contains fields… for an example to get you started see: <a href="static/simple.json">simple.json</a></p>
+<p>You can provide the form to <code>coolform</code> the directive directly from a js object or from an URL that <code>coolform</code> will download and display automatically. For more information on that matter see: <a href="coolform-directive">coolform-directive</a></p>
+<h3 id="form">form</h3>
+<p><code>form</code> is the root element of your definition, it can contain the following keys:</p>
+<ul>
+<li><strong>action</strong> <em>(URL)</em> : The url where the form will be sent</li>
+<li><strong>name</strong> <em>(String)</em> : A name for the form</li>
+<li><strong>method</strong> <em>(HTTP-METHOD)</em> : The http method to use to send the form (GET, POST…)</li>
+<li><strong>submit</strong> <em>(String)</em> : Label for submit button</li>
+<li><strong>reset</strong> <em>(String)</em> : Label for reset button</li>
+<li><strong>pages</strong> <em>([<a href="#page">page</a>, …])</em> : The form pages</li>
+<li><strong>hiddens</strong> <em>({&quot;name&quot;:&quot;value&quot;})</em> : A map of hidden fields to be sent along with the form</li>
+<li><strong>headers</strong> <em>({&quot;name&quot;:&quot;value&quot;})</em> : A map of request headers to be sent when the form is submitted to the server</li>
+<li><strong>dependencies</strong> <em>([<a href="#dependency">dependency</a>, …])</em> : User defined dependencies.</li>
+</ul>
+<h3 id="page">page</h3>
+<p>Your form should have at least one <code>page</code>, if there are more it will be displayed as a wizard.</p>
+<ul>
+<li><strong>title</strong> <em>(String)</em> : A title for the page</li>
+<li><strong>description</strong> <em>(String)</em> : A description to be displayed on top of the page. Can be in HTML format.</li>
+<li><strong>lines</strong> <em>([<a href="#line">line</a>, …])</em> A list of lines.</li>
+</ul>
+<h3 id="line">line</h3>
+<ul>
+<li><strong>lines</strong> <em>([<a href="#field">field</a>, …])</em> A list of field. If you are using the default template, there should be no more than 4.</li>
+</ul>
+<h3 id="field">field</h3>
+<ul>
+<li><strong>name</strong> <em>(String)</em> : Name of the field</li>
+<li><strong>type</strong> <em>(field type)</em> : The type of the field. See <a href="#">Fields</a> for more informations.</li>
+<li><strong>label</strong> <em>(String)</em> : A label to be display along the field. Can contain HTML.</li>
+<li><strong>size</strong> <em>(Int)</em> : Size of the field. With the default template, this should be between 1 and 4.</li>
+<li><strong>help</strong> <em>(String)</em> : An help message to be displayed along the field.</li>
+<li><strong>mandatory</strong> <em>(Boolean)</em> : If false, it will override validators and validate even if the field is blank. If it&#39;s not blank then other validators will apply.</li>
+<li><strong>default</strong> <em>(Value)</em> : Default value for this field</li>
+<li><strong>options</strong> <em>({&quot;opt&quot;:&quot;value&quot;})</em> : A map of options specific to this type of field. See <a href="#">Fields</a> for more informations.</li>
+<li><strong>validators</strong> <em>([<a href="#validator">validator</a>, …])</em> : A list of validators to be applied to this field.</li>
+</ul>
+<h3 id="validator">validator</h3>
+<p>Validators apply validation contraints on fields. See <a href="#">Validators</a> for a list of builtin validators.</p>
+<ul>
+<li><strong>name</strong> <em>(String)</em> : Name of the validator</li>
+<li><strong>message</strong> <em>(String)</em> : Message to display when the validation failed</li>
+<li><strong>options</strong> <em>({&quot;opt&quot;:&quot;value&quot;})</em> : A map of options specific to this validator. See <a href="#">Validators</a> for more informations.</li>
+</ul>
+<h3 id="dependency">dependency</h3>
+<p>A user can extends coolforms with custom validators and directives.</p>
+<ul>
+<li><strong>type</strong> <em>&quot;validator&quot;</em> : User can define it&#39;s own validators, and even override builtin validators. Once declared it can be used like any regular validator. </li>
+<li><strong>type</strong> <em>&quot;directive&quot;</em> : User can define it&#39;s own directives, and even override builtin directives. Once declared it can be used like any regular directive.</li>
+<li><strong>name</strong> <em>(String)</em> : Name used later in the configuration for this dependency.</li>
+<li><strong>tag</strong> <em>(String)</em> : If the dependency is a directive, you have to provide the tag name used to display it. For example: &quot;my-input&quot; will be converted to somethinf like <code>&lt;my-input field=&quot;field&quot;&gt;&lt;/my-input&gt;</code>.</li>
+<li><strong>module</strong> <em>(Angular Module name)</em> : the module name of the dependency. Only requiered for validators.</li>
+<li><strong>factory</strong> <em>(Angular Factory name)</em> : the factory name of the dependency. Only requiered for validators.</li>
+</ul>
+      
+    </div>
+  </body>
+</html>
