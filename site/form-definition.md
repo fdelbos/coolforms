@@ -40,7 +40,7 @@ Your form should have at least one `page`, if there are more it will be displaye
 * **label** *(String)* : A label to be display along the field. Can contain HTML.
 * **size** *(Int)* : Size of the field. With the default template, this should be between 1 and 4.
 * **help** *(String)* : An help message to be displayed along the field.
-* **mandatory** *(Boolean)* : If false, it will override validators and validate even if the field is blank. If it's not blank then other validators will apply.
+* **mandatory** *(Boolean)* : If false, it will override validators and validate even if the field is blank. If it's not blank then other validators will apply. If mandatory is true a not blank validator is added.
 * **default** *(Value)* : Default value for this field
 * **options** *({"opt":"value"})* : A map of options specific to this type of field. See [Fields](#) for more informations.
 * **validators** *([[validator](#validator), …])* : A list of validators to be applied to this field.
