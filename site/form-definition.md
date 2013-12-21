@@ -58,6 +58,6 @@ A user can extends coolforms with custom validators and directives.
 * **type** *"validator"* : User can define it's own validators, and even override builtin validators. Once declared it can be used like any regular validator. 
 * **type** *"directive"* : User can define it's own directives, and even override builtin directives. Once declared it can be used like any regular directive.
 * **name** *(String)* : Name used later in the configuration for this dependency.
-* **tag** *(String)* : If the dependency is a directive, you have to provide the tag name used to display it. For example: "my-input" will be converted to somethinf like `<my-input field="field"></my-input>`.
+* **tag** *(String)* : If the dependency is a directive, you have to provide the tag name used to display it. For example: "my-input" will be converted to something like `<my-input field="field"></my-input>`.
 * **module** *(Angular Module name)* : the module name of the dependency. Only requiered for validators.
 * **factory** *(Angular Factory name)* : the factory name of the dependency. Only requiered for validators.
