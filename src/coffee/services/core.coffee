@@ -115,9 +115,14 @@ angular.module('CoolFormServices').
           _fields[@name] = this
 
         _isMandatory: (def) ->
-          if !def['mandatory']? or !def['mandatory'] then return false
-          @mandatory = true
-          @validators.push new Validator({'name':'not_null'}, @name)
+          switch def['mandatory']
+            when undefined
+              if @validators.length == 0 then false
+              else true
+            when false then false
+            when true
+              if @validators.length == 0
+                @validators.push(new Validator({'name':'not_blank'}, @name))
 
         isValid: -> @valid
 
@@ -138,6 +143,9 @@ angular.module('CoolFormServices').
           this._doValidate(true)
 
         validate: ->
+          if @mandatory is false
+            if validators.get('not_blank').validator(@name, _fields) == false
+              return this._doValidate(true)
           for v in @validators
             if v.validate() is false
               return this._doValidate(false, v.message)
