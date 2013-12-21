@@ -12,6 +12,7 @@ angular.module('CoolFormServices').
     return ->
 
       directives =
+        boolean: "coolform-boolean"
         text: "coolform-text"
 
       add = (type, name) -> directives[type] = name
