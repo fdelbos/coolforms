@@ -1,4 +1,5 @@
-# Form Definition
+Form Definition
+===============
 
 With CoolForms, forms are displayed automatically from a definition. This allows you to create them on the fly and avoir cluttering your code with HMTL. In this document you will learn how to create them from scratch.
 
@@ -30,5 +31,22 @@ Your form should have at least one `page`, if there are more it will be displaye
 * **lines** *([[line](#line), …])* A list of lines.
 
 ### line
+* **lines** *([[field](#field), …])* A list of field. If you are using the default template, there should be no more than 4.
+
+### field
+* **name** *(String)* : Name of the field
+* **type** *(field type)* : The type of the field. See [Fields](#) for more informations.
+* **label** *(String)* : A label to be display along the field. Can contain HTML.
+* **size** *(Int)* : Size of the field. With the default template, this should be between 1 and 4.
+* **help** *(String)* : An help message to be displayed along the field.
+* **mandatory** *(Boolean)* : If false, it will override validators and validate even if the field is blank. If it's not blank then other validators will apply.
+* **default** *(Value)* : Default value for this field
+* **options** *({"opt":"value"})* : A map of options specific to this type of field. See [Fields](#) for more informations.
+* **validators** *([[validator](#validator), …])* : A list of validators to be applied to this field.
+
+### validator
+* **name** *(String)* : Name of the validator
+* **message** *(String)* : Message to display when the validation failed
+* **options** *({"opt":"value"})* : A map of options specific to this validator. See [Validators](#) for more informations.
 
 
