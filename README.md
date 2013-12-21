@@ -14,4 +14,4 @@ Coolforms is a form generation library for Angularjs, enabling the develloper to
 * Conditionnal display of fields
 * Custom POST headers (ex: for Cross Site Request Forgery protection)
 
-To get a feel of CoolForms check out the [getting started page](https://github.com/fdelbos/coolforms/wiki/Getting-Started-with-CoolForms)
+To get a feel of CoolForms check out the [getting started page](http://fdelbos.github.io/coolforms/getting-started.html)
