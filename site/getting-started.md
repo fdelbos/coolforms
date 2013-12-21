@@ -17,7 +17,7 @@ In order for the form to display something it need's a definition. It can be eit
 JSON file or a javascript object. See the 
 [simple.json](static/simple.json) sample as an example.
 
-Also the [Form Definition page](form-Definition.html) get deeper on the subject.
+Also the [Form Definition page](form-definition.html) get deeper on the subject.
 
 ### AngularJS Application
 
@@ -64,6 +64,6 @@ angular.module('app', ['CoolForm']);
 
 ### Where to go from there?
 
-Well you are probably curious to know more about definitions so jump to the [Form Definition page](https://github.com/fdelbos/coolforms/wiki/Form-Definition) where you will learn a great deal about it.
+Well you are probably curious to know more about definitions so jump to the [Form Definition page](form-definition.html) where you will learn a great deal about it.
 
 Also you may want to build the project yourself: [Building and Testing](building-and-testing.html).
