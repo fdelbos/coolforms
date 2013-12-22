@@ -1,0 +1,23 @@
+<div ng-if="!options" ng-hide="loadingError" class="alert alert-info">
+  <strong>Loading</strong>&nbsp;
+  <p>Please wait while loading data</p>
+</div>
+
+<div ng-if="loadingError" class="alert alert-warning">
+  <strong>Cannot load the field data!</strong> &nbsp;
+  <p>Please check your internet connection and try again</p>
+</div>
+
+<div ng-if="options">
+  <select ng-if="field.options.multiple"
+		  class="form-control"
+		  multiple
+		  ng-options="x.id as x.label for x in options"
+		  ng-model="value">
+  </select>
+  <select ng-if="!field.options.multiple"
+		  class="form-control"
+		  ng-options="x.id as x.label for x in options"
+		  ng-model="value">
+  </select>
+</div>
