@@ -99,7 +99,7 @@ angular.module('CoolFormServices').
           @name = def['name']
           @type = def['type']
           @label = def['label']
-          @size = if def['size']? then def['size']? else 1
+          @size = if def['size']? then def['size'] else 1
           @help = def['help']
           @default = def['default']
           @options = if def['options']? then def['options'] else {}
