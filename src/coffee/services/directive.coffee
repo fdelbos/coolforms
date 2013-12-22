@@ -13,7 +13,9 @@ angular.module('CoolFormServices').
 
       directives =
         boolean: "coolform-boolean"
+        select: "coolform-select"
         text: "coolform-text"
+        textarea: "coolform-textarea"
 
       add = (type, name) -> directives[type] = name
       get = (type) ->
