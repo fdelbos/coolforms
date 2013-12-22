@@ -13,24 +13,24 @@ angular.module('CoolFormDirectives').
       scope.value = scope.field.value
       scope.field.onChange.push (v) ->
         if v != scope.value then scope.value = v
-        
-      scope.$watch('value', (v, o) -> scope.field.set(v))
+
+      scope.$watch('value', (v, o) ->
+        scope.field.set(v))
 
       scope.loadingError = false
       display_error = ->
         scope.loadingError = true
         scope.$apply()
 
-      if !scope.field.options.multiple? then scope.field.options.multiple = false
-
-      scope.options = []
       if !scope.field.options.type? then scope.field.options.type = "static"
-
       if scope.field.options.type == "static"
         scope.options = scope.field.options.options
+        if !scope.value then scope.value = scope.options[0].id
+          
       else if scope.field.options.type == "dynamic"
         networkService().getJSON(scope.field.options.url, display_error).then((v) ->
           scope.options = v
+          if !scope.value then scope.value = scope.options[0].id
           scope.loadingError = false
         )
 
