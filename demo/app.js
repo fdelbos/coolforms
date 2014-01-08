@@ -2,6 +2,27 @@
 (function() {
   angular.module('app', ['CoolForm', 'AnotherDemoModule']);
 
+  angular.module('app').controller('ctrl', function($scope) {
+    $scope.before = function(data) {
+      console.log(data);
+      return confirm("Do you want to send?");
+    };
+    $scope.success = function(result, errors) {
+      return console.log("success");
+    };
+    $scope.error = function(validate, errors) {
+      return console.log("error");
+    };
+    $scope.doSend = function() {
+      if ($scope.sendCb != null) {
+        return $scope.sendCb();
+      }
+    };
+    return $scope.send = function() {
+      return console.log("pas cool");
+    };
+  });
+
   angular.module('DemoModule', []).factory('demoFactory', function() {
     var validator;
     validator = function(name, fields, options) {
