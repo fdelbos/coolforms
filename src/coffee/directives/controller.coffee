@@ -22,7 +22,7 @@ angular.module('CoolForm').
         if scope.error? then f.userCB.error = scope.error
         if scope.failure? then f.userCB.failure = scope.failure
         if scope.send?
-          scope.send(success, error) = ->
+          scope.send = (success, error) ->
             f.submit(success, error)
 
       
