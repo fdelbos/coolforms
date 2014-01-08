@@ -1,7 +1,7 @@
 [
-	{"id":1, "label":"un"},
-	{"id":2, "label":"deux"},
-	{"id":3, "label":"trois"},
-	{"id":4, "label":"quatre"},
-	{"id":5, "label":"cinq"}
+	{"id":"1", "label":"un"},
+	{"id":"2", "label":"deux"},
+	{"id":"3", "label":"trois"},
+	{"id":"4", "label":"quatre"},
+	{"id":"5", "label":"cinq"}
 ]
