@@ -10,6 +10,32 @@
 
   angular.module('CoolForm', ['CoolFormDirectives', 'CoolFormServices']);
 
+  angular.module('CoolFormDirectives').directive('coolformBoolean', function($templateCache) {
+    var l;
+    l = function(scope) {
+      scope.value = scope.field.value;
+      scope.field.onChange.push(function(v) {
+        if (v !== scope.value) {
+          return scope.value = v;
+        }
+      });
+      scope.$watch('value', function(v, o) {
+        return scope.field.set(v);
+      });
+      if (scope.value === null) {
+        return scope.value = false;
+      }
+    };
+    return {
+      restrict: 'E',
+      scope: {
+        field: '='
+      },
+      template: $templateCache.get('coolForm.boolean'),
+      link: l
+    };
+  });
+
   angular.module('CoolFormDirectives').directive('coolformContainer', function($templateCache) {
     var l;
     l = function(scope) {
@@ -37,15 +63,35 @@
   angular.module('CoolForm').directive('coolform', function($templateCache, networkService, coreService) {
     var l;
     l = function(scope, elem, attr) {
-      var display_error, load;
+      var display_error, load, setCB;
       scope.loadingError = false;
       display_error = function() {
         scope.loadingError = true;
         return scope.$apply();
       };
+      setCB = function(f) {
+        if (scope.before != null) {
+          f.userCB.before = scope.before;
+        }
+        if (scope.success != null) {
+          f.userCB.success = scope.success;
+        }
+        if (scope.error != null) {
+          f.userCB.error = scope.error;
+        }
+        if (scope.failure != null) {
+          f.userCB.failure = scope.failure;
+        }
+        if (scope.send != null) {
+          return scope.send = function(success, error) {
+            return f.submit(success, error);
+          };
+        }
+      };
       load = function() {
         return networkService().getJSON(scope.url, display_error).then(function(definition) {
           scope.form = coreService(definition);
+          setCB(scope.form);
           return scope.loadingError = false;
         });
       };
@@ -53,14 +99,20 @@
       if (scope.url != null) {
         return load();
       } else if (scope.definition != null) {
-        return scope.form = coreService(scope.definition);
+        scope.form = coreService(scope.definition);
+        return setCB(scope.form);
       }
     };
     return {
       restrict: 'E',
       scope: {
         url: '@?',
-        definition: '=?'
+        definition: '=?',
+        before: '=?',
+        success: '=?',
+        error: '=?',
+        failure: '=?',
+        send: '=?'
       },
       template: $templateCache.get('coolForm.controller'),
       link: l,
@@ -155,6 +207,52 @@
     };
   });
 
+  angular.module('CoolFormDirectives').directive('coolformSelect', function($templateCache, networkService) {
+    var l;
+    l = function(scope) {
+      var display_error;
+      scope.value = scope.field.value;
+      scope.field.onChange.push(function(v) {
+        if (v !== scope.value) {
+          return scope.value = v;
+        }
+      });
+      scope.$watch('value', function(v, o) {
+        return scope.field.set(v);
+      });
+      scope.loadingError = false;
+      display_error = function() {
+        scope.loadingError = true;
+        return scope.$apply();
+      };
+      if (scope.field.options.type == null) {
+        scope.field.options.type = "static";
+      }
+      if (scope.field.options.type === "static") {
+        scope.options = scope.field.options.options;
+        if (!scope.value) {
+          return scope.value = scope.options[0].id;
+        }
+      } else if (scope.field.options.type === "dynamic") {
+        return networkService().getJSON(scope.field.options.url, display_error).then(function(v) {
+          scope.options = v;
+          if (!scope.value) {
+            scope.value = scope.options[0].id;
+          }
+          return scope.loadingError = false;
+        });
+      }
+    };
+    return {
+      restrict: 'E',
+      scope: {
+        field: '='
+      },
+      template: $templateCache.get('coolForm.select'),
+      link: l
+    };
+  });
+
   angular.module('CoolFormDirectives').directive('coolformSubmit', function($templateCache, networkService) {
     var l;
     l = function(scope) {
@@ -206,6 +304,29 @@
         field: '='
       },
       template: $templateCache.get('coolForm.text'),
+      link: l
+    };
+  });
+
+  angular.module('CoolFormDirectives').directive('coolformTextarea', function($templateCache) {
+    var l;
+    l = function(scope) {
+      scope.value = scope.field.value;
+      scope.field.onChange.push(function(v) {
+        if (v !== scope.value) {
+          return scope.value = v;
+        }
+      });
+      return scope.$watch('value', function(v, o) {
+        return scope.field.set(v);
+      });
+    };
+    return {
+      restrict: 'E',
+      scope: {
+        field: '='
+      },
+      template: $templateCache.get('coolForm.textarea'),
       link: l
     };
   });
@@ -534,6 +655,11 @@
           this.resetLabel = def['reset'];
           this.headers = def['headers'];
           this.hiddens = def['hiddens'];
+          this.userCB = {
+            beforeSend: null,
+            success: null,
+            error: null
+          };
           this.pages = (function() {
             var _i, _len, _ref, _results;
             _ref = def['pages'];
@@ -560,16 +686,47 @@
         }
 
         Form.prototype.submit = function(success, error) {
-          var k, params, v, _ref;
+          var errorCB, k, params, successCB, v, _error, _ref, _success;
           if (!this.validate()) {
             return;
           }
+          successCB = this.userCB.success != null ? this.userCB.success : function() {};
+          errorCB = this.userCB.error != null ? this.userCB.error : function() {};
+          _success = function(data) {
+            var k, o, v, _ref, _results;
+            o = $.parseJSON(data);
+            if (o.ok === true) {
+              if (success != null) {
+                success(true);
+              }
+              return successCB(true);
+            } else {
+              if (success != null) {
+                success(false, o.errors);
+              }
+              successCB(false, o.errors);
+              _ref = o.errors;
+              _results = [];
+              for (k in _ref) {
+                v = _ref[k];
+                _field[k].valid = false;
+                _results.push(_field[k].error = v);
+              }
+              return _results;
+            }
+          };
+          _error = function() {
+            if (error != null) {
+              error();
+            }
+            return errorCB();
+          };
           params = {
             method: this.method,
             action: this.action,
             data: {},
-            success: success,
-            error: error
+            success: _success,
+            error: _error
           };
           if (this.headers != null) {
             params['headers'] = this.headers;
@@ -587,7 +744,11 @@
               params.data[k] = v.value;
             }
           }
-          return networkService().sendForm(params);
+          if (this.userCB.before == null) {
+            return networkService().sendForm(params);
+          } else if (this.userCB.before(params.data) === true) {
+            return networkService().sendForm(params);
+          }
         };
 
         return Form;
@@ -646,7 +807,7 @@
           this.name = def['name'];
           this.type = def['type'];
           this.label = def['label'];
-          this.size = def['size'] != null ? def['size'] != null : 1;
+          this.size = def['size'] != null ? def['size'] : 1;
           this.help = def['help'];
           this["default"] = def['default'];
           this.options = def['options'] != null ? def['options'] : {};
@@ -674,13 +835,23 @@
         }
 
         Field.prototype._isMandatory = function(def) {
-          if ((def['mandatory'] == null) || !def['mandatory']) {
-            return false;
+          switch (def['mandatory']) {
+            case void 0:
+              if (this.validators.length === 0) {
+                return false;
+              } else {
+                return true;
+              }
+              break;
+            case false:
+              return false;
+            case true:
+              if (this.validators.length === 0) {
+                return this.validators.push(new Validator({
+                  'name': 'not_blank'
+                }, this.name));
+              }
           }
-          this.mandatory = true;
-          return this.validators.push(new Validator({
-            'name': 'not_null'
-          }, this.name));
         };
 
         Field.prototype.isValid = function() {
@@ -720,6 +891,11 @@
 
         Field.prototype.validate = function() {
           var v, _i, _len, _ref;
+          if (this.mandatory === false) {
+            if (validators.get('not_blank').validator(this.name, _fields) === false) {
+              return this._doValidate(true);
+            }
+          }
           _ref = this.validators;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             v = _ref[_i];
@@ -776,7 +952,10 @@
     return function() {
       var add, directives, get;
       directives = {
-        text: "coolform-text"
+        boolean: "coolform-boolean",
+        select: "coolform-select",
+        text: "coolform-text",
+        textarea: "coolform-textarea"
       };
       add = function(type, name) {
         return directives[type] = name;
@@ -908,17 +1087,20 @@
   });
 
   angular.module('CoolFormDirectives').run(function($templateCache) {
+    $templateCache.put("coolForm.boolean", "<input type=\"checkbox\" ng-model=\"value\">");
     $templateCache.put("coolForm.container", "<form><div class=\"container-fluid\"><coolform-wizard ng-if=\"wizard\" form=\"form\"></coolform-wizard><div ng-if=\"page\"><coolform-page page=\"page\" service=\"service\"></coolform-page><coolform-submit form=\"form\"></coolform-submit></div></div></form>");
     $templateCache.put("coolForm.controller", "<div><div ng-if=\"!form\" ng-hide=\"loadingError\" ng-include=\" 'coolForm.loading' \"></div><coolform-error-loading ng-if=\"loadingError\" reload=\"reload\"></coolform-error-loading><div ng-if=\"form\"><coolform-container form=\"form\"></coolform-container></div></div>");
-    $templateCache.put("coolForm.error_loading", "<div class=\"alert alert-warning\"><strong>Cannot load the Form!</strong><p>Please check your internet connection and try to: &nbsp;<button type=\"button\" ng-click=\"load()\" class=\"btn btn-primary\">Reload the Form</button></p></div>");
+    $templateCache.put("coolForm.error_loading", "<div class=\"alert alert-warning\"><strong>Cannot load the Form!</strong> &nbsp;<p>Please check your internet connection and try to: &nbsp;<button type=\"button\" ng-click=\"load()\" class=\"btn btn-primary\">Reload the Form</button></p></div>");
     $templateCache.put("coolForm.error_submit", "<div class=\"alert alert-danger\"><strong>Error : Cannot submit the Form!</strong><p>Please check your internet connection and try again.</p></div>");
     $templateCache.put("coolForm.field", "<div class=\"form-group\" ng-show=\"field.display\" ng-class=\"{'has-error': !field.valid}\"><label class=\"control-label\" for=\"{{ field.name }}\">{{ field.label }}<span ng-if=\"field.mandatory\">&nbsp;*</span></label><div><coolform-dynamic field=\"field\"></coolform-dynamic></div><p class=\"help-block\" ng-bind-html=\"help\"></p></div>");
     $templateCache.put("coolForm.line", "<div class=\"row\" ng-show=\"line.display\"><div ng-repeat=\"field in line.fields\"><div class=\"col-md-{{ field.size * 3 }}\"><coolform-field field=\"field\"></coolform-field></div></div></div>");
     $templateCache.put("coolForm.loading", "<div class=\"alert alert-info\"><strong>Loading form</strong><p>Please wait while loading the form</p></div>");
     $templateCache.put("coolForm.page", "<div ng-if=\"page.title || page.description\" class=\"row\"><div class=\"col-md-12\"><h4 ng-if=\"page.title\" class=\"text-primary\">{{ page.title }}</h4><div ng-if=\"page.description\"><div ng-bind-html=\"page.description\"></div></div></div></div><coolform-line ng-repeat=\"line in page.lines\" line=\"line\"></coolform-line>");
+    $templateCache.put("coolForm.select", "<div ng-if=\"!options\" ng-hide=\"loadingError\" class=\"alert alert-info\"><strong>Loading</strong>&nbsp;<p>Please wait while loading data</p></div><div ng-if=\"loadingError\" class=\"alert alert-warning\"><strong>Cannot load the field data!</strong> &nbsp;<p>Please check your internet connection and try again</p></div><select class=\"form-control\" ng-options=\"x.id as x.label for x in options\" ng-model=\"value\"></select>");
     $templateCache.put("coolForm.submit", "<div class=\"row\" ng-if=\"submitError\"><div class=\"col-md-12\"><div><div ng-include=\" 'coolForm.error_submit' \"></div></div></div></div><div class=\"row\"><div class=\"col-md-12\"><div class=\"well well-sm\"><button ng-click=\"submit()\" type=\"button\" class=\"btn btn-primary\">{{ form.submitLabel }}</button> <button ng-if=\"form.resetLabel\" ng-click=\"reset()\" type=\"button\" class=\"btn btn-default\">{{ form.resetLabel }}</button></div></div></div>");
-    $templateCache.put("coolForm.text", "<input type=\"{{ type }}\" class=\"form-control\" placeholder=\"{{ field.placeholder }}\" ng-model=\"value\">");
-    return $templateCache.put("coolForm.wizard", "<div class=\"row\"><div class=\"col-md-12\"><ul class=\"nav nav-tabs\"><li ng-repeat=\"page in form.pages\" ng-show=\"page.display\" ng-class=\"{active: isCurrent($index)}\"><a ng-click=\"moveTo($index)\" ng-class=\"{'text-danger': !form.pages[$index].isValid()}\" href=\"\">{{ page.title }}</a></li><li></li></ul></div></div><div ng-repeat=\"page in form.pages\"><coolform-page ng-show=\"isCurrent($index)\" page=\"page\"></coolform-page></div><div ng-hide=\"isLast()\" class=\"row\"><div class=\"col-md-12\"><div class=\"well well-sm\"><button ng-click=\"moveToNext()\" type=\"button\" class=\"btn btn-primary\" ng-class=\"{'btn-danger': !form.pages[current].isValid()}\"><span class=\"glyphicon glyphicon-arrow-right\"></span>{{ nextTitle() }}</button></div></div></div><coolform-submit ng-show=\"isLast()\" form=\"form\"></coolform-submit>");
+    $templateCache.put("coolForm.text", "<input type=\"{{ type }}\" class=\"form-control\" placeholder=\"{{ field.options.placeholder }}\" ng-model=\"value\">");
+    $templateCache.put("coolForm.textarea", "<textarea class=\"form-control\" ng-model=\"value\" placeholder=\"{{ field.options.placeholder }}\" rows=\"{{ field.options.rows }}\"></textarea>");
+    return $templateCache.put("coolForm.wizard", "<div class=\"row\"><div class=\"col-md-12\"><ul class=\"nav nav-tabs\"><li ng-repeat=\"page in form.pages\" ng-show=\"page.display\" ng-class=\"{active: isCurrent($index)}\"><a ng-click=\"moveTo($index)\" ng-class=\"{'text-danger': !form.pages[$index].isValid()}\" href=\"\">{{ page.title }}</a></li><li></li></ul></div></div><div ng-repeat=\"page in form.pages\"><coolform-page ng-show=\"isCurrent($index)\" page=\"page\"></coolform-page></div><div ng-hide=\"isLast()\" class=\"row\"><div class=\"col-md-12\"><div class=\"well well-sm\"><button ng-click=\"moveToNext()\" type=\"button\" class=\"btn btn-primary\" ng-class=\"{'btn-danger': !form.pages[current].isValid()}\"><span class=\"glyphicon glyphicon-arrow-right\"></span>&nbsp;{{ nextTitle() }}</button></div></div></div><coolform-submit ng-show=\"isLast()\" form=\"form\"></coolform-submit>");
   });
 
 }).call(this);

@@ -51,7 +51,9 @@
                                 "size": 1,
                                 "type": "text",
                                 "name": "password",
-								"options": {"type": "password"}
+                                "options": {
+                                    "type": "password"
+                                }
                             }
                         ]
                     }
