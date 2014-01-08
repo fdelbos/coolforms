@@ -23,7 +23,7 @@ angular.module('CoolFormDirectives').
       scope.submit = ->
         scope.submitError = false
         scope.form.submit(null, submitError)
-      
+                    
     return {
       restrict: 'E'
       scope:

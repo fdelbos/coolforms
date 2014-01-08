@@ -59,25 +59,50 @@ angular.module('CoolFormServices').
           @resetLabel = def['reset']
           @headers = def['headers']
           @hiddens = def['hiddens']
+          @userCB =
+            beforeSend: null
+            success: null
+            error: null
           @pages = (new Page(p) for p in def['pages'])
           if def['dependencies']? then for d in def['dependencies']
             switch d.type
               when 'validator' then validators.add(d)
               when 'directive' then directives.add(d.name, d.tag)
 
-        submit: (success, error)->
+        submit: (success, error) ->
           if !this.validate() then return
+
+          successCB = if @userCB.success? then @userCB.success else ->
+          errorCB = if @userCB.error? then @userCB.error else ->
+          _success = (data) ->
+            o = $.parseJSON(data)
+            if o.ok is true
+              if success? then success(true)
+              successCB(true)
+            else
+              if success? then success(false, o.errors)
+              successCB(false, o.errors)
+              for k, v of o.errors
+                _field[k].valid = false
+                _field[k].error = v
+          _error = ->
+            if error? then error()
+            errorCB()
+
           params =
             method: @method
             action: @action
             data: {}
-            success: success
-            error: error
+            success: _success              
+            error: _error
           if @headers? then params['headers'] = @headers
           if @hiddens? then (params.data[k] = v for k, v of @hiddens)
           for k, v of _fields
             if v.display == true then params.data[k] = v.value
-          networkService().sendForm(params)
+          if !@userCB.before? then networkService().sendForm(params)
+          else if @userCB.before(params.data) is true
+            networkService().sendForm(params)
+
 
       class Page extends Displayable
         constructor: (def) ->
