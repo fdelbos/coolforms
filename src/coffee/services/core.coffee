@@ -48,7 +48,6 @@ angular.module('CoolFormServices').
           if def['show_on']? then this._doDisplay(def['show_on'], true)
           if def['hide_on']? then this._doDisplay(def['hide_on'], false)
 
-
       class Form extends Element
         constructor: (def) ->
           super("pages")
