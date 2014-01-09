@@ -42,20 +42,18 @@
             <!--   a(href="") Editor-->
           </ul>
         </div>
-      </div><a href="https://github.com/fdelbos/coolforms"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a><h1 id="coolforms">coolforms</h1>
-<p>Coolforms is a form generation library for Angularjs, enabling the develloper to dynamically genreate sophisticated forms. Forms are defined through JSON definition files or javascript objects.</p>
-<h3 id="features">Features</h3>
+      </div><a href="https://github.com/fdelbos/coolforms"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a><h1 id="coolform-directive">Coolform Directive</h1>
+<p>Displaying a form is very easy, just user the <code>coolform</code> directive</p>
+<pre><code>&lt;coolform url=&quot;definition.json&quot;&gt;&lt;/coolform&gt;</code></pre>
+<p>The directive can take various parameters:</p>
 <ul>
-<li>Form rendering from a JSON service or a Javascript object</li>
-<li>Builtin validation as well as user defined validators</li>
-<li>Builtin fields and the possibility to add your own set of fields</li>
-<li>Wizard or simple page rendrering</li>
-<li>Posting data to a server</li>
-<li>Fully customizable templates based on Bootstrap</li>
-<li>Conditionnal display of fields</li>
-<li>Custom POST headers (ex: for Cross Site Request Forgery protection)</li>
+<li><strong>url</strong> <em>(URL)</em> : The url where download the form definition</li>
+<li><strong>definition</strong> <em>(jsobj)</em> : a javacript object to use as the form definition</li>
+<li><strong>success</strong> <em>(callback)</em> : a callback to trigger on success</li>
+<li><strong>error</strong> <em>(callback)</em> : a callback to be called on validation error</li>
+<li><strong>failure</strong> <em>(callback)</em> : called there is a problem with the connection</li>
+<li><strong>send</strong> <em>(jsobj)</em> : will assign a submit hook to the parameter</li>
 </ul>
-<p>To get a feel of CoolForms check out the <a href="http://fdelbos.github.io/coolforms/getting-started.html">getting started page</a></p>
       
     </div>
   </body>
