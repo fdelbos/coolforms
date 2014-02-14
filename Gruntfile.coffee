@@ -87,13 +87,17 @@ module.exports = (grunt) ->
       fs.mkdir('doc')
       fs.copySync('site/static', 'doc/static')
       fs.copySync('coolforms.js', 'doc/static/coolforms.js')
-      tmpl = jade.compile(fs.readFileSync('site/template.jade'), {'pretty':true})
+      tmpl = jade.compile(fs.readFileSync('site/core.jade'), {'pretty':true})
+      index = jade.compile(fs.readFileSync('site/index.jade'), {'pretty':true})
       mds = glob.sync('site/*.md')
       mds.map (f) ->
         data =
           content: marked(fs.readFileSync(f, 'utf8'))
           name: path.basename(f, '.md')
-        fs.writeFileSync("doc/#{data.name}.html", tmpl(data))
+        grunt.log.writeln(data.name)
+        switch data.name
+          when "index" then fs.writeFileSync("doc/#{data.name}.html", index(data))
+          else fs.writeFileSync("doc/#{data.name}.html", tmpl(data))
   )
 
 
